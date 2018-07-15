@@ -71,6 +71,7 @@ public abstract class AbstractApplicationEventMulticaster
 	@Nullable
 	private BeanFactory beanFactory;
 
+	//TODO bob-ps:检索互斥对象
 	private Object retrievalMutex = this.defaultRetriever;
 
 

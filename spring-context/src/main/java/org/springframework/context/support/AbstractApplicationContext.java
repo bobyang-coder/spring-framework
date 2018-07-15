@@ -208,6 +208,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Nullable
 	private ApplicationEventMulticaster applicationEventMulticaster;
 
+	//TODO bob-ps:监听器set
 	/** Statically specified listeners */
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
@@ -515,37 +516,48 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
+			//TODO bob-ps:准备刷新上下文
 			// Prepare this context for refreshing.
 			prepareRefresh();
 
+			//TODO bob-ps:调用子类刷新beanFactory
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
+			//TODO bob-ps:准备bean factory
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
 			try {
+				//TODO bob-ps:允许子类对bean factory进行操作的抽象方法
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
+				//TODO bob-ps:调用在上下文中注册为bean的工厂处理器
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
+				//TODO bob-ps:注册bean处理器，拦截bean创建
 				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
 
+				//TODO bob-ps:初始化上下文的消息源
 				// Initialize message source for this context.
 				initMessageSource();
 
+				//TODO bob-ps:初始化上下文的事件广播器
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
 
+				//TODO bob-ps:抽象方法@初始化特殊上下文子类的其他特殊bean
 				// Initialize other special beans in specific context subclasses.
 				onRefresh();
 
+				//TODO bob-ps:检查listener并注册
 				// Check for listener beans and register them.
 				registerListeners();
 
+				//TODO bob-ps:实例化所有剩余的（非懒init）单例
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
 
@@ -824,6 +836,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
 		}
 
+		//TODO bob-ps:发布早期application events
 		// Publish early application events now that we finally have a multicaster...
 		Set<ApplicationEvent> earlyEventsToProcess = this.earlyApplicationEvents;
 		this.earlyApplicationEvents = null;
@@ -839,6 +852,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * initializing all remaining singleton beans.
 	 */
 	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
+
+		//TODO bob-ps:初识上下文的转换服务
 		// Initialize conversion service for this context.
 		if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &&
 				beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) {
@@ -846,6 +861,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 					beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));
 		}
 
+		//TODO bob-ps:嵌入式值解析器，主要用于解析自动注入的参数值
 		// Register a default embedded value resolver if no bean post-processor
 		// (such as a PropertyPlaceholderConfigurer bean) registered any before:
 		// at this point, primarily for resolution in annotation attribute values.
@@ -853,18 +869,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			beanFactory.addEmbeddedValueResolver(strVal -> getEnvironment().resolvePlaceholders(strVal));
 		}
 
+		//TODO bob-ps:早期初始化LoimTimeWebVistBebean为了允许早期注册它们的transformer(变压器)
 		// Initialize LoadTimeWeaverAware beans early to allow for registering their transformers early.
 		String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, false, false);
 		for (String weaverAwareName : weaverAwareNames) {
 			getBean(weaverAwareName);
 		}
 
+		//TODO bob-ps:停止用临时类加载器进行类型匹配
 		// Stop using the temporary ClassLoader for type matching.
 		beanFactory.setTempClassLoader(null);
 
+		//TODO bob-ps:允许缓存所有bean定义元数据，不期望进一步更改
 		// Allow for caching all bean definition metadata, not expecting further changes.
 		beanFactory.freezeConfiguration();
 
+		//TODO bob-ps:实例化所有剩余的（非懒init）单例
 		// Instantiate all remaining (non-lazy-init) singletons.
 		beanFactory.preInstantiateSingletons();
 	}

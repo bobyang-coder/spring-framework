@@ -40,6 +40,7 @@ public interface HierarchicalBeanFactory extends BeanFactory {
 	BeanFactory getParentBeanFactory();
 
 	/**
+	 * TODO bob-ps：返回本地factory是否存在该bean，忽略父类上下文，这是一个忽略父类上下文替代BeanFactory#containsBean方法
 	 * Return whether the local bean factory contains a bean of the given name,
 	 * ignoring beans defined in ancestor contexts.
 	 * <p>This is an alternative to {@code containsBean}, ignoring a bean

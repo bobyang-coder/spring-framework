@@ -325,6 +325,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	BeanDefinition getMergedBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
 	/**
+	 * //TODO bob-ps：判定bean名称对应的bean是否是一个FactoryBean
 	 * Determine whether the bean with the given name is a FactoryBean.
 	 * @param name the name of the bean to check
 	 * @return whether the bean is a FactoryBean

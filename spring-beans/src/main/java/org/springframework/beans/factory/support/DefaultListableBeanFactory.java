@@ -152,28 +152,36 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** Resolver to use for checking if a bean definition is an autowire candidate */
 	private AutowireCandidateResolver autowireCandidateResolver = new SimpleAutowireCandidateResolver();
 
+	//TODO bob-ps:从依赖类型映射到对应的自动注入值
 	/** Map from dependency type to corresponding autowired value */
 	private final Map<Class<?>, Object> resolvableDependencies = new ConcurrentHashMap<>(16);
 
+	//TODO bob-ps:bean定义对象map，key：bean名称
 	/** Map of bean definition objects, keyed by bean name */
 	private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
+	//TODO bob-ps:所有bean类型对应的bean名称map
 	/** Map of singleton and non-singleton bean names, keyed by dependency type */
 	private final Map<Class<?>, String[]> allBeanNamesByType = new ConcurrentHashMap<>(64);
 
+	//TODO bob-ps:所有单例bean类型对应的bean名称map
 	/** Map of singleton-only bean names, keyed by dependency type */
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
 
+	//TODO bob-ps:按注册顺序列出的bean定义名称列表
 	/** List of bean definition names, in registration order */
 	private volatile List<String> beanDefinitionNames = new ArrayList<>(256);
 
+	//TODO bob-ps:按注册顺序列出的手动注册的单例
 	/** List of names of manually registered singletons, in registration order */
 	private volatile Set<String> manualSingletonNames = new LinkedHashSet<>(16);
 
+	////TODO bob-ps:在冻结配置的情况下缓存bean定义名称数组
 	/** Cached array of bean definition names in case of frozen configuration */
 	@Nullable
 	private volatile String[] frozenBeanDefinitionNames;
 
+	//TODO bob-ps:是否可以为所有bean缓存bean定义元数据
 	/** Whether bean definition metadata may be cached for all beans */
 	private volatile boolean configurationFrozen = false;
 
