@@ -80,14 +80,17 @@ import org.springframework.util.concurrent.ListenableFutureTask;
  */
 public class StompBrokerRelayMessageHandler extends AbstractBrokerMessageHandler {
 
+	/**
+	 * The system session ID.
+	 */
 	public static final String SYSTEM_SESSION_ID = "_system_";
 
-	// STOMP recommends error of margin for receiving heartbeats
+	/** STOMP recommended error of margin for receiving heartbeats. */
 	private static final long HEARTBEAT_MULTIPLIER = 3;
 
 	/**
-	 * A heartbeat is setup once a CONNECTED frame is received which contains the heartbeat settings
-	 * we need. If we don't receive CONNECTED within a minute, the connection is closed proactively.
+	 * Heartbeat starts once CONNECTED frame with heartbeat settings is received.
+	 * If CONNECTED doesn't arrive within a minute, we'll close the connection.
 	 */
 	private static final int MAX_TIME_TO_CONNECTED_FRAME = 60 * 1000;
 
@@ -403,7 +406,7 @@ public class StompBrokerRelayMessageHandler extends AbstractBrokerMessageHandler
 		}
 
 		if (logger.isInfoEnabled()) {
-			logger.info("Connecting \"system\" session to " + this.relayHost + ":" + this.relayPort);
+			logger.info("Starting \"system\" session, " + toString());
 		}
 
 		StompHeaderAccessor accessor = StompHeaderAccessor.create(StompCommand.CONNECT);
@@ -535,7 +538,7 @@ public class StompBrokerRelayMessageHandler extends AbstractBrokerMessageHandler
 				}
 				return;
 			}
-			stats.incrementDisconnectCount();
+			this.stats.incrementDisconnectCount();
 			handler.forward(message, stompAccessor);
 		}
 		else {
@@ -552,7 +555,11 @@ public class StompBrokerRelayMessageHandler extends AbstractBrokerMessageHandler
 
 	@Override
 	public String toString() {
-		return "StompBrokerRelay[" + this.relayHost + ":" + this.relayPort + "]";
+		return "StompBrokerRelay[" + getTcpClientInfo() + "]";
+	}
+
+	private String getTcpClientInfo() {
+		return this.tcpClient != null ? this.tcpClient.toString() : this.relayHost + ":" + this.relayPort;
 	}
 
 
@@ -570,7 +577,7 @@ public class StompBrokerRelayMessageHandler extends AbstractBrokerMessageHandler
 		private volatile boolean isStompConnected;
 
 
-		private StompConnectionHandler(String sessionId, StompHeaderAccessor connectHeaders) {
+		protected StompConnectionHandler(String sessionId, StompHeaderAccessor connectHeaders) {
 			this(sessionId, connectHeaders, true);
 		}
 
@@ -987,7 +994,7 @@ public class StompBrokerRelayMessageHandler extends AbstractBrokerMessageHandler
 	private static class VoidCallable implements Callable<Void> {
 
 		@Override
-		public Void call() throws Exception {
+		public Void call() {
 			return null;
 		}
 	}
@@ -1014,7 +1021,7 @@ public class StompBrokerRelayMessageHandler extends AbstractBrokerMessageHandler
 		}
 
 		public String toString() {
-			return (connectionHandlers.size() + " sessions, " + relayHost + ":" + relayPort +
+			return (connectionHandlers.size() + " sessions, " + getTcpClientInfo() +
 					(isBrokerAvailable() ? " (available)" : " (not available)") +
 					", processed CONNECT(" + this.connect.get() + ")-CONNECTED(" +
 					this.connected.get() + ")-DISCONNECT(" + this.disconnect.get() + ")");

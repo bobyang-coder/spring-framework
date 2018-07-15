@@ -126,6 +126,7 @@ public abstract class AnnotationUtils {
 	private static final Map<Class<?>, Set<Method>> annotatedBaseTypeCache =
 			new ConcurrentReferenceHashMap<>(256);
 
+	@SuppressWarnings("unused")
 	@Deprecated  // just here for older tool versions trying to reflectively clear the cache
 	private static final Map<Class<?>, ?> annotatedInterfaceCache = annotatedBaseTypeCache;
 
@@ -165,7 +166,8 @@ public abstract class AnnotationUtils {
 		}
 		Class<? extends Annotation> annotatedElement = annotation.annotationType();
 		try {
-			return synthesizeAnnotation(annotatedElement.getAnnotation(annotationType), annotatedElement);
+			A metaAnn = annotatedElement.getAnnotation(annotationType);
+			return (metaAnn != null ? synthesizeAnnotation(metaAnn, annotatedElement) : null);
 		}
 		catch (Throwable ex) {
 			handleIntrospectionFailure(annotatedElement, ex);
@@ -553,13 +555,18 @@ public abstract class AnnotationUtils {
 				if (clazz == null || Object.class == clazz) {
 					break;
 				}
-				try {
-					Method equivalentMethod = clazz.getDeclaredMethod(method.getName(), method.getParameterTypes());
-					Method resolvedEquivalentMethod = BridgeMethodResolver.findBridgedMethod(equivalentMethod);
-					result = findAnnotation((AnnotatedElement) resolvedEquivalentMethod, annotationType);
-				}
-				catch (NoSuchMethodException ex) {
-					// No equivalent method found
+				Set<Method> annotatedMethods = getAnnotatedMethodsInBaseType(clazz);
+				if (!annotatedMethods.isEmpty()) {
+					for (Method annotatedMethod : annotatedMethods) {
+						if (annotatedMethod.getName().equals(method.getName()) &&
+								Arrays.equals(annotatedMethod.getParameterTypes(), method.getParameterTypes())) {
+							Method resolvedSuperMethod = BridgeMethodResolver.findBridgedMethod(annotatedMethod);
+							result = findAnnotation((AnnotatedElement) resolvedSuperMethod, annotationType);
+							if (result != null) {
+								break;
+							}
+						}
+					}
 				}
 				if (result == null) {
 					result = searchOnInterfaces(method, annotationType, clazz.getInterfaces());
@@ -1826,8 +1833,8 @@ public abstract class AnnotationUtils {
 	/**
 	 * Determine if the supplied method is an "annotationType" method.
 	 * @return {@code true} if the method is an "annotationType" method
-	 * @see Annotation#annotationType()
 	 * @since 4.2
+	 * @see Annotation#annotationType()
 	 */
 	static boolean isAnnotationTypeMethod(@Nullable Method method) {
 		return (method != null && method.getName().equals("annotationType") && method.getParameterCount() == 0);
@@ -2040,7 +2047,7 @@ public abstract class AnnotationUtils {
 	 * @see #getAttributeAliasNames
 	 * @see #getAttributeOverrideName
 	 */
-	private static class AliasDescriptor {
+	private static final class AliasDescriptor {
 
 		private final Method sourceAttribute;
 

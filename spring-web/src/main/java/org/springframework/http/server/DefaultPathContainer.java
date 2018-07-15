@@ -36,7 +36,7 @@ import org.springframework.util.StringUtils;
  * @author Rossen Stoyanchev
  * @since 5.0
  */
-class DefaultPathContainer implements PathContainer {
+final class DefaultPathContainer implements PathContainer {
 
 	private static final MultiValueMap<String, String> EMPTY_MAP = new LinkedMultiValueMap<>(0);
 
@@ -85,7 +85,7 @@ class DefaultPathContainer implements PathContainer {
 
 	@Override
 	public String toString() {
-		return "[path='" + this.path + "\']";
+		return value();
 	}
 
 

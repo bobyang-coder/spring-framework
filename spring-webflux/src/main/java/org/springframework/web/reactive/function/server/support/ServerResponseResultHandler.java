@@ -34,7 +34,7 @@ import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
- * {@code HandlerResultHandler} implementation that supports {@link ServerResponse}s.
+ * {@code HandlerResultHandler} implementation that supports {@link ServerResponse ServerResponses}.
  *
  * @author Arjen Poutsma
  * @since 5.0
@@ -53,7 +53,6 @@ public class ServerResponseResultHandler implements HandlerResultHandler, Initia
 	 * <p>By default this is set to {@link ServerCodecConfigurer}'s default writers.
 	 */
 	public void setMessageWriters(List<HttpMessageWriter<?>> configurer) {
-		Assert.notNull(messageWriters, "'messageWriters' must not be null");
 		this.messageWriters = configurer;
 	}
 
@@ -104,4 +103,5 @@ public class ServerResponseResultHandler implements HandlerResultHandler, Initia
 			}
 		});
 	}
+
 }

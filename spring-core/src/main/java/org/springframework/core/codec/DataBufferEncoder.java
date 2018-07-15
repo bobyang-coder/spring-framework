@@ -29,7 +29,7 @@ import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
 /**
- * Simple pass-through encoder for {@link DataBuffer}s.
+ * Simple pass-through encoder for {@link DataBuffer DataBuffers}.
  *
  * @author Arjen Poutsma
  * @since 5.0
@@ -52,12 +52,16 @@ public class DataBufferEncoder extends AbstractEncoder<DataBuffer> {
 			DataBufferFactory bufferFactory, ResolvableType elementType, @Nullable MimeType mimeType,
 			@Nullable Map<String, Object> hints) {
 
-		return Flux.from(inputStream);
-	}
+		Flux<DataBuffer> flux = Flux.from(inputStream);
 
-	@Override
-	public Long getContentLength(DataBuffer dataBuffer, @Nullable MimeType mimeType) {
-		return (long) dataBuffer.readableByteCount();
+		if (logger.isDebugEnabled() && !Hints.isLoggingSuppressed(hints)) {
+			flux = flux.doOnNext(buffer -> {
+				String logPrefix = Hints.getLogPrefix(hints);
+				logger.debug(logPrefix + "Writing " + buffer.readableByteCount() + " bytes");
+			});
+		}
+
+		return flux;
 	}
 
 }

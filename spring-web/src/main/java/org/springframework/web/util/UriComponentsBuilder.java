@@ -361,7 +361,7 @@ public class UriComponentsBuilder implements UriBuilder, Cloneable {
 	 * Build a {@code UriComponents} instance and replaces URI template variables
 	 * with the values from an array. This is a shortcut method which combines
 	 * calls to {@link #build()} and then {@link UriComponents#expand(Object...)}.
-	 * @param uriVariableValues URI variable values
+	 * @param uriVariableValues the URI variable values
 	 * @return the URI components with expanded values
 	 */
 	public UriComponents buildAndExpand(Object... uriVariableValues) {
@@ -743,6 +743,10 @@ public class UriComponentsBuilder implements UriBuilder, Cloneable {
 					scheme(matcher.group(1).trim());
 					port(null);
 				}
+				else if (isForwardedSslOn(headers)) {
+					scheme("https");
+					port(null);
+				}
 				matcher = FORWARDED_HOST_PATTERN.matcher(forwardedToUse);
 				if (matcher.find()) {
 					adaptForwardedHost(matcher.group(1).trim());
@@ -752,6 +756,10 @@ public class UriComponentsBuilder implements UriBuilder, Cloneable {
 				String protocolHeader = headers.getFirst("X-Forwarded-Proto");
 				if (StringUtils.hasText(protocolHeader)) {
 					scheme(StringUtils.tokenizeToStringArray(protocolHeader, ",")[0]);
+					port(null);
+				}
+				else if (isForwardedSslOn(headers)) {
+					scheme("https");
 					port(null);
 				}
 
@@ -778,6 +786,11 @@ public class UriComponentsBuilder implements UriBuilder, Cloneable {
 		}
 
 		return this;
+	}
+
+	private boolean isForwardedSslOn(HttpHeaders headers) {
+		String forwardedSsl = headers.getFirst("X-Forwarded-Ssl");
+		return StringUtils.hasText(forwardedSsl) && forwardedSsl.equalsIgnoreCase("on");
 	}
 
 	private void adaptForwardedHost(String hostToUse) {

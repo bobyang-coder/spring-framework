@@ -29,6 +29,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.core.ResolvableType;
+import org.springframework.core.codec.Hints;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpInputMessage;
@@ -46,12 +47,17 @@ import org.springframework.util.StringUtils;
  * @author Rossen Stoyanchev
  * @since 5.0
  */
-public class FormHttpMessageReader implements HttpMessageReader<MultiValueMap<String, String>> {
+public class FormHttpMessageReader extends LoggingCodecSupport
+		implements HttpMessageReader<MultiValueMap<String, String>> {
 
+	/**
+	 * The default charset used by the reader.
+	 */
 	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 	private static final ResolvableType MULTIVALUE_TYPE =
 			ResolvableType.forClassWithGenerics(MultiValueMap.class, String.class, String.class);
+
 
 	private Charset defaultCharset = DEFAULT_CHARSET;
 
@@ -101,7 +107,13 @@ public class FormHttpMessageReader implements HttpMessageReader<MultiValueMap<St
 					CharBuffer charBuffer = charset.decode(buffer.asByteBuffer());
 					String body = charBuffer.toString();
 					DataBufferUtils.release(buffer);
-					return parseFormData(charset, body);
+					MultiValueMap<String, String> formData = parseFormData(charset, body);
+					if (logger.isDebugEnabled()) {
+						String details = isEnableLoggingRequestDetails() ?
+								formData.toString() : "form fields " + formData.keySet() + " (content masked)";
+						logger.debug(Hints.getLogPrefix(hints) + "Read " + details);
+					}
+					return formData;
 				});
 	}
 
