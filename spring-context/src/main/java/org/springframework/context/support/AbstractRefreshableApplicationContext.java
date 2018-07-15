@@ -64,9 +64,11 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractRefreshableApplicationContext extends AbstractApplicationContext {
 
+	//TODO bob-ps:允许bean定义覆盖
 	@Nullable
 	private Boolean allowBeanDefinitionOverriding;
 
+	//TODO bob-ps:允许循环引用
 	@Nullable
 	private Boolean allowCircularReferences;
 
@@ -74,6 +76,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	@Nullable
 	private DefaultListableBeanFactory beanFactory;
 
+	//TODO bob-ps:内部BeanFactory同步监控器
 	/** Synchronization monitor for the internal BeanFactory */
 	private final Object beanFactoryMonitor = new Object();
 
@@ -116,6 +119,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 
 	/**
+	 * TODO bob-ps:此实现对该上下文的底层bean工厂进行实际刷新，关闭先前的bean工厂（如果有的话），并为上下文的生命周期的下一阶段初始化新鲜的bean工厂。
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
@@ -127,6 +131,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
+			//TODO bob-ps:创建一个DefaultListableBeanFactory对象
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
 			customizeBeanFactory(beanFactory);
