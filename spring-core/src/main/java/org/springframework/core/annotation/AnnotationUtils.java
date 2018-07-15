@@ -126,6 +126,7 @@ public abstract class AnnotationUtils {
 	private static final Map<Class<?>, Set<Method>> annotatedBaseTypeCache =
 			new ConcurrentReferenceHashMap<>(256);
 
+	@SuppressWarnings("unused")
 	@Deprecated  // just here for older tool versions trying to reflectively clear the cache
 	private static final Map<Class<?>, ?> annotatedInterfaceCache = annotatedBaseTypeCache;
 
@@ -165,7 +166,8 @@ public abstract class AnnotationUtils {
 		}
 		Class<? extends Annotation> annotatedElement = annotation.annotationType();
 		try {
-			return synthesizeAnnotation(annotatedElement.getAnnotation(annotationType), annotatedElement);
+			A metaAnn = annotatedElement.getAnnotation(annotationType);
+			return (metaAnn != null ? synthesizeAnnotation(metaAnn, annotatedElement) : null);
 		}
 		catch (Throwable ex) {
 			handleIntrospectionFailure(annotatedElement, ex);
@@ -553,13 +555,18 @@ public abstract class AnnotationUtils {
 				if (clazz == null || Object.class == clazz) {
 					break;
 				}
-				try {
-					Method equivalentMethod = clazz.getDeclaredMethod(method.getName(), method.getParameterTypes());
-					Method resolvedEquivalentMethod = BridgeMethodResolver.findBridgedMethod(equivalentMethod);
-					result = findAnnotation((AnnotatedElement) resolvedEquivalentMethod, annotationType);
-				}
-				catch (NoSuchMethodException ex) {
-					// No equivalent method found
+				Set<Method> annotatedMethods = getAnnotatedMethodsInBaseType(clazz);
+				if (!annotatedMethods.isEmpty()) {
+					for (Method annotatedMethod : annotatedMethods) {
+						if (annotatedMethod.getName().equals(method.getName()) &&
+								Arrays.equals(annotatedMethod.getParameterTypes(), method.getParameterTypes())) {
+							Method resolvedSuperMethod = BridgeMethodResolver.findBridgedMethod(annotatedMethod);
+							result = findAnnotation((AnnotatedElement) resolvedSuperMethod, annotationType);
+							if (result != null) {
+								break;
+							}
+						}
+					}
 				}
 				if (result == null) {
 					result = searchOnInterfaces(method, annotationType, clazz.getInterfaces());

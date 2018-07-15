@@ -39,6 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
+import org.apache.commons.logging.Log;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -298,8 +300,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		RootBeanDefinition bd = new RootBeanDefinition(beanClass);
 		bd.setScope(SCOPE_PROTOTYPE);
 		bd.allowCaching = ClassUtils.isCacheSafe(beanClass, getBeanClassLoader());
-		// For the nullability warning, see the elaboration in AbstractBeanFactory.doGetBean;
-		// in short: This is never going to be null unless user-declared code enforces null.
 		return (T) createBean(beanClass.getName(), bd, null);
 	}
 
@@ -333,8 +333,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		BeanWrapper bw = new BeanWrapperImpl(existingBean);
 		initBeanWrapper(bw);
 		populateBean(beanName, bd, bw);
-		// For the nullability warning, see the elaboration in AbstractBeanFactory.doGetBean;
-		// in short: This is never going to be null unless user-declared code enforces null.
 		return initializeBean(beanName, existingBean, bd);
 	}
 
@@ -354,8 +352,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Use non-singleton bean definition, to avoid registering bean as dependent bean.
 		RootBeanDefinition bd = new RootBeanDefinition(beanClass, autowireMode, dependencyCheck);
 		bd.setScope(BeanDefinition.SCOPE_PROTOTYPE);
-		// For the nullability warning, see the elaboration in AbstractBeanFactory.doGetBean;
-		// in short: This is never going to be null unless user-declared code enforces null.
 		return createBean(beanClass.getName(), bd, null);
 	}
 
@@ -722,19 +718,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		int minNrOfArgs =
 				(mbd.hasConstructorArgumentValues() ? mbd.getConstructorArgumentValues().getArgumentCount() : 0);
 		Method[] candidates = ReflectionUtils.getUniqueDeclaredMethods(factoryClass);
-		for (Method factoryMethod : candidates) {
-			if (Modifier.isStatic(factoryMethod.getModifiers()) == isStatic &&
-					factoryMethod.getName().equals(mbd.getFactoryMethodName()) &&
-					factoryMethod.getParameterCount() >= minNrOfArgs) {
+		for (Method candidate : candidates) {
+			if (Modifier.isStatic(candidate.getModifiers()) == isStatic && mbd.isFactoryMethod(candidate) &&
+					candidate.getParameterCount() >= minNrOfArgs) {
 				// Declared type variables to inspect?
-				if (factoryMethod.getTypeParameters().length > 0) {
+				if (candidate.getTypeParameters().length > 0) {
 					try {
 						// Fully resolve parameter names and argument values.
-						Class<?>[] paramTypes = factoryMethod.getParameterTypes();
+						Class<?>[] paramTypes = candidate.getParameterTypes();
 						String[] paramNames = null;
 						ParameterNameDiscoverer pnd = getParameterNameDiscoverer();
 						if (pnd != null) {
-							paramNames = pnd.getParameterNames(factoryMethod);
+							paramNames = pnd.getParameterNames(candidate);
 						}
 						ConstructorArgumentValues cav = mbd.getConstructorArgumentValues();
 						Set<ConstructorArgumentValues.ValueHolder> usedValueHolders = new HashSet<>(paramTypes.length);
@@ -751,8 +746,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 							}
 						}
 						Class<?> returnType = AutowireUtils.resolveReturnTypeForFactoryMethod(
-								factoryMethod, args, getBeanClassLoader());
-						uniqueCandidate = (commonType == null ? factoryMethod : null);
+								candidate, args, getBeanClassLoader());
+						uniqueCandidate = (commonType == null && returnType == candidate.getReturnType() ?
+								candidate : null);
 						commonType = ClassUtils.determineCommonAncestor(returnType, commonType);
 						if (commonType == null) {
 							// Ambiguous return types found: return null to indicate "not determinable".
@@ -766,8 +762,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					}
 				}
 				else {
-					uniqueCandidate = (commonType == null ? factoryMethod : null);
-					commonType = ClassUtils.determineCommonAncestor(factoryMethod.getReturnType(), commonType);
+					uniqueCandidate = (commonType == null ? candidate : null);
+					commonType = ClassUtils.determineCommonAncestor(candidate.getReturnType(), commonType);
 					if (commonType == null) {
 						// Ambiguous return types found: return null to indicate "not determinable".
 						return null;
@@ -776,12 +772,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
-		if (commonType != null) {
-			// Clear return type found: all factory methods return same type.
-			mbd.factoryMethodReturnType = (uniqueCandidate != null ?
-					ResolvableType.forMethodReturnType(uniqueCandidate) : ResolvableType.forClass(commonType));
+		if (commonType == null) {
+			return null;
 		}
-		return commonType;
+		// Common return type found: all factory methods return same type. For a non-parameterized
+		// unique candidate, cache the full type declaration context of the target factory method.
+		cachedReturnType = (uniqueCandidate != null ?
+				ResolvableType.forMethodReturnType(uniqueCandidate) : ResolvableType.forClass(commonType));
+		mbd.factoryMethodReturnType = cachedReturnType;
+		return cachedReturnType.resolve();
 	}
 
 	/**
@@ -1275,7 +1274,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * from the bean definition.
 	 * @param beanName the name of the bean
 	 * @param mbd the bean definition for the bean
-	 * @param bw BeanWrapper with bean instance
+	 * @param bw the BeanWrapper with bean instance
 	 */
 	protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable BeanWrapper bw) {
 		if (bw == null) {
@@ -1364,7 +1363,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param beanName the name of the bean we're wiring up.
 	 * Useful for debugging messages; not used functionally.
 	 * @param mbd bean definition to update through autowiring
-	 * @param bw BeanWrapper from which we can obtain information about the bean
+	 * @param bw the BeanWrapper from which we can obtain information about the bean
 	 * @param pvs the PropertyValues to register wired objects with
 	 */
 	protected void autowireByName(
@@ -1398,7 +1397,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * behavior for bigger applications.
 	 * @param beanName the name of the bean to autowire by type
 	 * @param mbd the merged bean definition to update through autowiring
-	 * @param bw BeanWrapper from which we can obtain information about the bean
+	 * @param bw the BeanWrapper from which we can obtain information about the bean
 	 * @param pvs the PropertyValues to register wired objects with
 	 */
 	protected void autowireByType(
@@ -1864,6 +1863,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			super.clearSingletonCache();
 			this.factoryBeanInstanceCache.clear();
 		}
+	}
+
+	/**
+	 * Expose the logger to collaborating delegates.
+	 * @since 5.0.7
+	 */
+	Log getLogger() {
+		return logger;
 	}
 
 
