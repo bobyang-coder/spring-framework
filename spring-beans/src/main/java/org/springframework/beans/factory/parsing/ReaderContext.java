@@ -33,6 +33,7 @@ public class ReaderContext {
 
 	private final ProblemReporter problemReporter;
 
+	//TODO bob-ps:读取事件监听器，默认EmptyReaderEventListener，无具体操作
 	private final ReaderEventListener eventListener;
 
 	private final SourceExtractor sourceExtractor;

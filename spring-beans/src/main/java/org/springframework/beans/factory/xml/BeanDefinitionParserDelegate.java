@@ -415,12 +415,14 @@ public class BeanDefinitionParserDelegate {
 		String id = ele.getAttribute(ID_ATTRIBUTE);
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 
+		//TODO bob-ps:获取xml中bean的name属性(即别名)
 		List<String> aliases = new ArrayList<>();
 		if (StringUtils.hasLength(nameAttr)) {
 			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
 			aliases.addAll(Arrays.asList(nameArr));
 		}
 
+		//TODO bob-ps:如果id为空，则取第一个别名作为beanName
 		String beanName = id;
 		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {
 			beanName = aliases.remove(0);
@@ -434,6 +436,7 @@ public class BeanDefinitionParserDelegate {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
 
+		//TODO bob-ps:解析bean定义元素
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -472,6 +475,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * TODO bob-ps:判断beanName和alias的唯一性
 	 * Validate that the specified bean name and aliases have not been used already
 	 * within the current level of beans element nesting.
 	 */
@@ -493,6 +497,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * TODO bob-ps:解析bean定义元素，如果解析出现问题则返回
 	 * Parse the bean definition itself, without regard to name or aliases. May return
 	 * {@code null} if problems occurred during the parsing of the bean definition.
 	 */
@@ -512,17 +517,23 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
+			//TODO bob-ps:创建bean定义对象
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
+			//TODO bob-ps:解析beta标签上的属性
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
-
+			//TODO bob-ps:解析meta元素
 			parseMetaElements(ele, bd);
+			//TODO bob-ps:解析lookup-method元素
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+			//TODO bob-ps:解析replaced-method元素
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
-
+			//TODO bob-ps:解析constructor-arg元素
 			parseConstructorArgElements(ele, bd);
+			//TODO bob-ps:解析property元素
 			parsePropertyElements(ele, bd);
+			//TODO bob-ps:解析qualifier元素
 			parseQualifierElements(ele, bd);
 
 			bd.setResource(this.readerContext.getResource());
@@ -547,6 +558,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * TODO bob-ps:解析bean定义参数，即根据xml配置对bean定义对象进行参数赋值
 	 * Apply the attributes of the given bean element to the given bean * definition.
 	 * @param ele bean declaration element
 	 * @param beanName bean name
@@ -630,6 +642,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * TODO bob-ps:根据className和parentName创建bean定义对象
 	 * Create a bean definition for the given class name and parent name.
 	 * @param className the name of the bean class
 	 * @param parentName the name of the bean's parent bean
@@ -1352,6 +1365,7 @@ public class BeanDefinitionParserDelegate {
 		return parseCustomElement(ele, null);
 	}
 
+	//TODO bob-ps:解析自定义元素
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
 		String namespaceUri = getNamespaceURI(ele);
@@ -1370,6 +1384,7 @@ public class BeanDefinitionParserDelegate {
 		return decorateBeanDefinitionIfRequired(ele, definitionHolder, null);
 	}
 
+	//TODO bob-ps:为嘛要装饰？
 	public BeanDefinitionHolder decorateBeanDefinitionIfRequired(
 			Element ele, BeanDefinitionHolder definitionHolder, @Nullable BeanDefinition containingBd) {
 
