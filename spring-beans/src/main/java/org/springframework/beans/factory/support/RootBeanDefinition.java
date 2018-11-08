@@ -375,6 +375,11 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 		}
 	}
 
+	/**
+	 * TODO bob-ps:是否是外部管理初始化方法
+	 * @param initMethod
+	 * @return
+	 */
 	public boolean isExternallyManagedInitMethod(String initMethod) {
 		synchronized (this.postProcessingLock) {
 			return (this.externallyManagedInitMethods != null &&
