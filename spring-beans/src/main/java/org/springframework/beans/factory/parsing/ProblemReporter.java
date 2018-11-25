@@ -20,6 +20,7 @@ package org.springframework.beans.factory.parsing;
  * SPI interface allowing tools and other external processes to handle errors
  * and warnings reported during bean definition parsing.
  *
+ * TODO bob-ps：问题报导器，SPI接口，允许tools和其他处理器处理错误
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @since 2.0

@@ -28,6 +28,7 @@ import org.springframework.lang.Nullable;
  * generic format which can be further modified by a {@link SourceExtractor}
  * before being attached to the bean definition metadata.
  *
+ * TODO bob-ps：资源提取器，允许自定义扩展怎么将资源元数据附加的bean定义元数据上
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @since 2.0
@@ -38,6 +39,7 @@ import org.springframework.lang.Nullable;
 public interface SourceExtractor {
 
 	/**
+	 * TODO bob-ps：从配置解析器提供的候选对象中提取源元数据。
 	 * Extract the source metadata from the candidate object supplied
 	 * by the configuration parser.
 	 * @param sourceCandidate the original source metadata (never {@code null})

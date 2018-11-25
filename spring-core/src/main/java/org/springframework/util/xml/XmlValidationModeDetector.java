@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
+ * TODO bob-ps：检测XML流是否使用基于DTD或XSD的验证。
  * Detects whether an XML stream is using DTD- or XSD-based validation.
  *
  * @author Rob Harrop

@@ -22,6 +22,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 
 /**
+ * TODO bob-ps：加载xml文档的策略接口
  * Strategy interface for loading an XML {@link Document}.
  *
  * @author Rob Harrop

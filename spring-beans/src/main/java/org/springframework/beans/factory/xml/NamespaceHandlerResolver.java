@@ -33,6 +33,7 @@ import org.springframework.lang.Nullable;
 public interface NamespaceHandlerResolver {
 
 	/**
+	 * TODO bob-ps：根据namespace的uri获取出对应的NamespaceHandler(命名处理器)
 	 * Resolve the namespace URI and return the located {@link NamespaceHandler}
 	 * implementation.
 	 * @param namespaceUri the relevant namespace URI

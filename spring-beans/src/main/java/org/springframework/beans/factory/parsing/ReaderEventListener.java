@@ -22,6 +22,7 @@ import java.util.EventListener;
  * Interface that receives callbacks for component, alias and import
  * registrations during a bean definition reading process.
  *
+ * TODO bob-ps：bean定义读取时的监听器，用于接收组件、别名和导入的回调
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @since 2.0

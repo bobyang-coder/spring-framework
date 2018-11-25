@@ -19,6 +19,7 @@ package org.springframework.core.env;
 import org.springframework.lang.Nullable;
 
 /**
+ * TODO bob-ps：PropertySource的容器
  * Holder containing one or more {@link PropertySource} objects.
  *
  * @author Chris Beams

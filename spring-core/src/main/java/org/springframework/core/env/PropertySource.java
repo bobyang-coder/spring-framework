@@ -48,6 +48,7 @@ import org.springframework.util.ObjectUtils;
  * annotation provides a convenient and declarative way of adding property sources to the
  * enclosing {@code Environment}.
  *
+ * TODO bob-ps：键值对的Property来源
  * @author Chris Beams
  * @since 3.1
  * @see PropertySources
