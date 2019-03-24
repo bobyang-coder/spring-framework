@@ -134,13 +134,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	private static final Map<String, Reference<DefaultListableBeanFactory>> serializableFactories =
 			new ConcurrentHashMap<>(8);
 
+	//TODO bob-ps:此工厂的可选ID，用于序列化
 	/** Optional id for this factory, for serialization purposes */
 	@Nullable
 	private String serializationId;
 
+	//TODO bob-ps:允许相同名称的bean覆盖beanDefinition
 	/** Whether to allow re-registration of a different definition with the same name */
 	private boolean allowBeanDefinitionOverriding = true;
 
+	//TODO bob-ps:是否允许预加载类,甚至是懒加载的bean
 	/** Whether to allow eager class loading even for lazy-init beans */
 	private boolean allowEagerClassLoading = true;
 
@@ -148,6 +151,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Nullable
 	private Comparator<Object> dependencyComparator;
 
+	//TODO bob-ps:用于检查bean定义是否是一个自动注入候选者的解析器
 	/** Resolver to use for checking if a bean definition is an autowire candidate */
 	private AutowireCandidateResolver autowireCandidateResolver = new SimpleAutowireCandidateResolver();
 

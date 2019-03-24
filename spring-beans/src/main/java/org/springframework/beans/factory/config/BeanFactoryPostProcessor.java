@@ -46,6 +46,9 @@ import org.springframework.beans.BeansException;
 public interface BeanFactoryPostProcessor {
 
 	/**
+	 * TODO bob-ps：在上下文标准初始化后修改其内部Bean工厂。
+	 * 1.此时所有的Bean定义都应经被加载，但是bean都还没有被实例化
+	 * 2.此时允许重写和添加属性，甚至急于实例化bean
 	 * Modify the application context's internal bean factory after its standard
 	 * initialization. All bean definitions will have been loaded, but no beans
 	 * will have been instantiated yet. This allows for overriding or adding

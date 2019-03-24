@@ -53,7 +53,7 @@ public abstract class BeanFactoryUtils {
 
 
 	/**
-	 * TODO bob-ps：判断是否是一个工厂
+	 * TODO bob-ps：判断给定的beanName是否对应的是一个工厂引用
 	 * Return whether the given name is a factory dereference
 	 * (beginning with the factory dereference prefix).
 	 * @param name the name of the bean
@@ -66,6 +66,7 @@ public abstract class BeanFactoryUtils {
 
 	/**
 	 * TODO bob-ps:转换得到实际的bean名称，截取调间接引用的前缀
+	 *
 	 * Return the actual bean name, stripping out the factory dereference
 	 * prefix (if any, also stripping repeated factory prefixes if found).
 	 * @param name the name of the bean

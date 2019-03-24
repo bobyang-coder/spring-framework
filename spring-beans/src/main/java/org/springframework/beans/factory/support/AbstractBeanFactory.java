@@ -194,6 +194,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	// Implementation of BeanFactory interface
 	//---------------------------------------------------------------------
 
+	//TODO bob-ps:实现BeanFactory的getBean接口
 	@Override
 	public Object getBean(String name) throws BeansException {
 		return doGetBean(name, null, null, false);
@@ -225,6 +226,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
+	 * TODO bob-ps：所有获取bean的逻辑都在该方法中
 	 * Return an instance, which may be shared or independent, of the specified bean.
 	 * @param name the name of the bean to retrieve
 	 * @param requiredType the required type of the bean to retrieve
@@ -239,9 +241,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
+		//TODO bob-ps:1.转换bean名称
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
+		//TODO bob-ps:2.从缓存中获取代理bean
 		// Eagerly check singleton cache for manually registered singletons.
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
@@ -260,6 +264,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		else {
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
+			//TODO bob-ps: BeanFactory 不缓存 Prototype 类型的 bean，无法处理该类型 bean 的循环依赖问题
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
@@ -274,6 +279,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							nameToLookup, requiredType, args, typeCheckOnly);
 				}
 				else if (args != null) {
+					//TODO bob-ps: 使用明确的参数获取
 					// Delegation to parent with explicit args.
 					return (T) parentBeanFactory.getBean(nameToLookup, args);
 				}
@@ -288,9 +294,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			try {
+				//TODO bob-ps:合并父 BeanDefinition 与子 BeanDefinition
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
+				//TODO bob-ps:检查是否有 dependsOn 依赖，如果有则先初始化所依赖的 bean
 				// Guarantee initialization of beans that the current bean depends on.
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
@@ -299,6 +307,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
+						// TODO bob-ps:注册依赖记录
 						registerDependentBean(dep, beanName);
 						try {
 							getBean(dep);
@@ -1116,6 +1125,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	/**
 	 * TODO bob-ps:剔除工厂间接引用的前缀、并规范化bean名称
+	 *
+	 * 1. name 可能会以 & 字符开头，表明调用者想获取 FactoryBean 本身，而非 FactoryBean
+	 *    实现类所创建的 bean。在 BeanFactory 中，FactoryBean 的实现类和其他的 bean 存储
+	 *    方式是一致的，即 <beanName, bean>，beanName 中是没有 & 这个字符的。所以我们需要
+	 *    将 name 的首字符 & 移除，这样才能从缓存里取到 FactoryBean 实例。
+	 * 2. 若 name 是一个别名，则应将别名转换为具体的实例名，也就是 beanName
+	 *
 	 * Return the bean name, stripping out the factory dereference prefix if necessary,
 	 * and resolving aliases to canonical names.
 	 * @param name the user-specified name
@@ -1616,6 +1632,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected Object getObjectForBeanInstance(
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
+		//TODO bob-ps:1.如果name是间接引用FactoryBean，则判断beanInstance是否是FactoryBean
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
 		if (BeanFactoryUtils.isFactoryDereference(name)) {
 			if (beanInstance instanceof NullBean) {
@@ -1626,6 +1643,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
+		//TODO bob-ps:2.非FactoryBean或者name是间接引用FactoryBean
 		// Now we have the bean instance, which may be a normal bean or a FactoryBean.
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.
@@ -1645,6 +1663,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			//TODO bob-ps:通过FactoryBean的getObject方法生成Bean对象
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
 		return object;
