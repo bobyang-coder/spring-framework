@@ -950,7 +950,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * TODO bob-ps:返回这个bean定义是否“合成”，即不是由应用程序本身定义的。
+	 * bob-ps:返回这个bean定义是否“合成”，即不是由应用程序本身定义的。
+	 *
 	 * Return whether this bean definition is 'synthetic', that is,
 	 * not defined by the application itself.
 	 */
