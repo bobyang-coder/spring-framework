@@ -151,6 +151,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	/** BeanPostProcessors to apply in createBean */
 	private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
+	//TODO bob-ps:代表是否注册有 InstantiationAwareBeanPostProcessor 处理器
 	/** Indicates whether any InstantiationAwareBeanPostProcessors have been registered */
 	private boolean hasInstantiationAwareBeanPostProcessors;
 

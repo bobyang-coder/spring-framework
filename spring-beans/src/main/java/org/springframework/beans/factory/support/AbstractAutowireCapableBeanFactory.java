@@ -129,6 +129,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Nullable
 	private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
+	//TODO bob-ps：是否允许循环引用
 	/** Whether to automatically try to resolve circular references between beans */
 	private boolean allowCircularReferences = true;
 
@@ -470,6 +471,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Make sure bean class is actually resolved at this point, and
 		// clone the bean definition in case of a dynamically resolved Class
 		// which cannot be stored in the shared merged bean definition.
+		//解析获取bean对应class类型
 		Class<?> resolvedClass = resolveBeanClass(mbd, beanName);
 		if (resolvedClass != null && !mbd.hasBeanClass() && mbd.getBeanClassName() != null) {
 			mbdToUse = new RootBeanDefinition(mbd);
@@ -478,6 +480,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Prepare method overrides.
 		try {
+			//准备方法重写，判断要重写的方法是否存在、标记重写的方法是否存在重载方法
 			mbdToUse.prepareMethodOverrides();
 		}
 		catch (BeanDefinitionValidationException ex) {
@@ -487,6 +490,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			//在bean实例化之前先进行解析，aop代理就是在此实现的
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -533,6 +537,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeanCreationException {
 
 		// Instantiate the bean.
+		//1.实例化bean
 		BeanWrapper instanceWrapper = null;
 		if (mbd.isSingleton()) {
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
@@ -547,6 +552,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Allow post-processors to modify the merged bean definition.
+		//2.执行 MergedBeanDefinitionPostProcessors 处理器的 postProcessMergedBeanDefinition 方法
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
@@ -562,6 +568,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
+		//3.TODO 判断是否需要提前将bean暴露，为解决循环引用的问题
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -575,7 +582,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			//4.填充bean
 			populateBean(beanName, mbd, instanceWrapper);
+			//5.初始化bean实例
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1033,11 +1042,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object bean = null;
 		if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
 			// Make sure bean class is actually resolved at this point.
+			//bean非合成 && 存在 InstantiationAwareBeanPostProcessor 处理器
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
+					//执行InstantiationAwareBeanPostProcessor的postProcessBeforeInstantiation进行实例化之前的操作
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {
+						//执行 BeanPostProcessor 的 postProcessAfterInitialization 进行初始化之后的操作
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
 				}
@@ -1048,6 +1060,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * bob-ps：调用 InstantiationAwareBeanPostProcessors 的 postProcessBeforeInstantiation 方法对特殊的bean进行实例化，
+	 * 生成的对象用于替换真正实例化的对象
+	 *
 	 * Apply InstantiationAwareBeanPostProcessors to the specified bean definition
 	 * (by class and name), invoking their {@code postProcessBeforeInstantiation} methods.
 	 * <p>Any returned object will be used as the bean instead of actually instantiating
@@ -1295,6 +1310,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
 		// state of the bean before properties are set. This can be used, for example,
 		// to support styles of field injection.
+		//可以在bean的参数设置之前，通过 InstantiationAwareBeanPostProcessor 的 postProcessAfterInstantiation 方法对bean进行修改
 		boolean continueWithPropertyPopulation = true;
 
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {

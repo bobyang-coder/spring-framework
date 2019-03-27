@@ -66,6 +66,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	@Nullable
 	volatile ResolvableType targetType;
 
+	//TODO bob-ps:解析后bean的class类型
 	/** Package-visible field for caching the determined Class of a given bean definition */
 	@Nullable
 	volatile Class<?> resolvedTargetType;
@@ -92,12 +93,15 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	@Nullable
 	Object[] preparedConstructorArguments;
 
+	//TODO bob-ps:后置处理的锁
 	/** Common lock for the two post-processing fields below */
 	final Object postProcessingLock = new Object();
 
+	//TODO bob-ps:标记该bean是否需要 MergedBeanDefinitionPostProcessor 进行处理
 	/** Package-visible field that indicates MergedBeanDefinitionPostProcessor having been applied */
 	boolean postProcessed = false;
 
+	//TODO bob-ps:标识是否在实例化之前进行解析
 	/** Package-visible field that indicates a before-instantiation post-processor having kicked in */
 	@Nullable
 	volatile Boolean beforeInstantiationResolved;

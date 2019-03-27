@@ -1078,6 +1078,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * bob-ps:校验和准备要重写的方法，其实就是校验方法存不存在、方法是否重载
 	 * Validate and prepare the given method override.
 	 * Checks for existence of a method with the specified name,
 	 * marking it as not overloaded if none found.
@@ -1085,6 +1086,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @throws BeanDefinitionValidationException in case of validation failure
 	 */
 	protected void prepareMethodOverride(MethodOverride mo) throws BeanDefinitionValidationException {
+		//查询类中方法名对应多少个重载方法
 		int count = ClassUtils.getMethodCountForName(getBeanClass(), mo.getMethodName());
 		if (count == 0) {
 			throw new BeanDefinitionValidationException(
@@ -1093,6 +1095,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		}
 		else if (count == 1) {
 			// Mark override as not overloaded, to avoid the overhead of arg type checking.
+			//将override标记为未重载，以避免arg类型检查的开销。
 			mo.setOverloaded(false);
 		}
 	}
