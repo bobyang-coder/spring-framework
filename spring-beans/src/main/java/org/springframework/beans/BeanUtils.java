@@ -552,6 +552,10 @@ public abstract class BeanUtils {
 	}
 
 	/**
+	 * bob-ps：判断给定类型是否一个简单类型
+	 * - primitive、Enum、CharSequence、Number、Date、URI、Locale
+	 * - 简单类型的数组
+	 *
 	 * Check if the given type represents a "simple" property:
 	 * a primitive, a String or other CharSequence, a Number, a Date,
 	 * a URI, a URL, a Locale, a Class, or a corresponding array.

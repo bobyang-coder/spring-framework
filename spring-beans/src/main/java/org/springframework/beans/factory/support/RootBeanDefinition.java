@@ -66,7 +66,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	@Nullable
 	volatile ResolvableType targetType;
 
-	//TODO bob-ps:解析后bean的class类型
+	//TODO bob-ps:解析后bean的class类型(包可见字段)
 	/** Package-visible field for caching the determined Class of a given bean definition */
 	@Nullable
 	volatile Class<?> resolvedTargetType;
@@ -75,20 +75,25 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	@Nullable
 	volatile ResolvableType factoryMethodReturnType;
 
+	//TODO bob-ps:下面四个构造函数字段的通用锁
 	/** Common lock for the four constructor fields below */
 	final Object constructorArgumentLock = new Object();
 
+	//TODO bob-ps:用于缓存解析的构造函数或工厂方法(包可见字段)
 	/** Package-visible field for caching the resolved constructor or factory method */
 	@Nullable
 	Executable resolvedConstructorOrFactoryMethod;
 
+	//TODO bob-ps:用于标记构造函数参数已经被解析(包可见字段)
 	/** Package-visible field that marks the constructor arguments as resolved */
 	boolean constructorArgumentsResolved = false;
 
+	//TODO bob-ps:用于缓存所有已经解析的构造函数参数(包可见字段)
 	/** Package-visible field for caching fully resolved constructor arguments */
 	@Nullable
 	Object[] resolvedConstructorArguments;
 
+	//TODO bob-ps:用于缓存部分准备的构造函数参数(包可见字段)
 	/** Package-visible field for caching partly prepared constructor arguments */
 	@Nullable
 	Object[] preparedConstructorArguments;
@@ -380,7 +385,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	}
 
 	/**
-	 * TODO bob-ps:是否是外部管理初始化方法
+	 * TODO 不太懂这里的具体用途 bob-ps:是否是外部管理初始化方法
+	 *
 	 * @param initMethod
 	 * @return
 	 */

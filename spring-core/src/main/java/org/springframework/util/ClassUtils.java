@@ -1120,6 +1120,8 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * bob-ps：判断给定的class中是否有public的指定方法，如果有返回该方法
+	 *
 	 * Determine whether the given class has a public method with the given signature,
 	 * and return it if available (else return {@code null}).
 	 * <p>In case of any signature specified, only returns the method if there is a
@@ -1155,6 +1157,7 @@ public abstract class ClassUtils {
 			if (candidates.size() == 1) {
 				return candidates.iterator().next();
 			}
+			//如果重载方法存在多个，且没有执行参数列表，返回null
 			return null;
 		}
 	}

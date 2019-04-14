@@ -17,6 +17,10 @@
 package org.springframework.beans.factory;
 
 /**
+ * bob-ps：要由希望在销毁时释放资源的bean实现的接口。
+ * 如果BeanFactory处理缓存的单例，则它应该调用destroy方法。应用程序上下文应该关闭它的所有单例。
+ * 实现DisposableBean的另一种方法是指定自定义销毁方法，例如在XML bean定义中设置bean的destroy属性，spring会把其适配成DisposableBean对象
+ *
  * Interface to be implemented by beans that want to release resources
  * on destruction. A BeanFactory is supposed to invoke the destroy
  * method if it disposes a cached singleton. An application context

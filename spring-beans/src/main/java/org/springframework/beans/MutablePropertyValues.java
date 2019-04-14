@@ -338,6 +338,10 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	}
 
 	/**
+	 * bob-ps：
+	 * true：只包含转换过的值
+	 * false：值仍需要转换
+	 *
 	 * Return whether this holder contains converted values only ({@code true}),
 	 * or whether the values still need to be converted ({@code false}).
 	 */

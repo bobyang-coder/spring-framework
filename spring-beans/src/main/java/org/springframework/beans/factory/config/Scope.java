@@ -93,6 +93,8 @@ public interface Scope {
 	Object remove(String name);
 
 	/**
+	 * bob-ps:注册bean对应的销毁方法回调
+	 *
 	 * Register a callback to be executed on destruction of the specified
 	 * object in the scope (or at destruction of the entire scope, if the
 	 * scope does not destroy individual objects but rather only terminates

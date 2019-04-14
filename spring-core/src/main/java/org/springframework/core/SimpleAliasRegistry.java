@@ -205,7 +205,8 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
-	 * TODO bob-ps：将别名解析为规范名称，匹配别名
+	 * bob-ps：将别名解析为规范名称，匹配别名
+	 *
 	 * Determine the raw name, resolving aliases to canonical names.
 	 * @param name the user-specified name
 	 * @return the transformed name

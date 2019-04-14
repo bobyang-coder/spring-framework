@@ -90,6 +90,8 @@ abstract class AutowireUtils {
 	}
 
 	/**
+	 * bob-ps：判断给定的bean参数是否从依赖检查中排除，这个实现排除被cglib定义的参数
+	 *
 	 * Determine whether the given bean property is excluded from dependency checks.
 	 * <p>This implementation excludes properties defined by CGLIB.
 	 * @param pd the PropertyDescriptor of the bean property
@@ -100,17 +102,21 @@ abstract class AutowireUtils {
 		if (wm == null) {
 			return false;
 		}
+		//非CGLIB代理方法不过滤
 		if (!wm.getDeclaringClass().getName().contains("$$")) {
 			// Not a CGLIB method so it's OK.
 			return false;
 		}
 		// It was declared by CGLIB, but we might still want to autowire it
 		// if it was actually declared by the superclass.
+		//虽然它是CGLIB生命的，但是方法是在父类中声明的也不需要排除
 		Class<?> superclass = wm.getDeclaringClass().getSuperclass();
 		return !ClassUtils.hasMethod(superclass, wm.getName(), wm.getParameterTypes());
 	}
 
 	/**
+	 * bob-ps：返回给定bean属性的setter方法是否在任何给定接口中定义。
+	 *
 	 * Return whether the setter method of the given bean property is defined
 	 * in any of the given interfaces.
 	 * @param pd the PropertyDescriptor of the bean property

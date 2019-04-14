@@ -65,7 +65,7 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
-	 * TODO bob-ps:转换得到实际的bean名称，截取调间接引用的前缀
+	 * bob-ps:转换得到实际的bean名称，截取调间接引用的前缀
 	 *
 	 * Return the actual bean name, stripping out the factory dereference
 	 * prefix (if any, also stripping repeated factory prefixes if found).

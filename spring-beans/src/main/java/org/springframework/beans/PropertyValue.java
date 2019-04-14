@@ -23,6 +23,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * bob-ps:对象来保存单个bean属性的信息和值。在此处使用对象，而不仅仅是将所有属性存储在
+ * 通过属性名键控的映射允许更大的灵活性，并且能够以优化的方式处理索引属性等。
+ *
  * Object to hold information and value for an individual bean property.
  * Using an object here, rather than just storing all properties in
  * a map keyed by property name, allows for more flexibility, and the

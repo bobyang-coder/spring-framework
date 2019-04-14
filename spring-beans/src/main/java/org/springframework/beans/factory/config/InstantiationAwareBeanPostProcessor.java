@@ -47,7 +47,13 @@ import org.springframework.lang.Nullable;
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
 	/**
-	 * bob-ps:在对象实例化之前执行
+	 * bob-ps:
+	 * 执行时机：
+	 * - 在对象实例化之前执行
+	 * 作用：
+	 * - 可以生成代理对象替换目标对象
+	 * - 如果此方法返回非空对象，则bean创建过程将短路
+	 * - 唯一应用的进一步处理是调用BeanPostProcessor的postProcessAfterInitialization方法
 	 *
 	 * Apply this BeanPostProcessor <i>before the target bean gets instantiated</i>.
 	 * The returned bean object may be a proxy to use instead of the target bean,
@@ -76,7 +82,13 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	}
 
 	/**
-	 * bob-ps:在对象实例化之后执行
+	 * bob-ps：
+	 * 调用时机：
+	 * - 在bean通过构造方法或者工厂方法实例化之后-在属性填充(显式属性或自动注入)之前
+	 * 作用
+	 * - 这是对给定bean执行自定义字段注入的理想回调
+	 * 返回值
+	 * - 是否继续进行属性填充
 	 *
 	 * Perform operations after the bean has been instantiated, via a constructor or factory method,
 	 * but before Spring property population (from explicit properties or autowiring) occurs.
