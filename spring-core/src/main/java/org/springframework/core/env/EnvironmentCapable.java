@@ -17,6 +17,8 @@
 package org.springframework.core.env;
 
 /**
+ * bob-ps:该接口标识一个拥有并暴露Environment对象引用
+ *
  * Interface indicating a component that contains and exposes an {@link Environment} reference.
  *
  * <p>All Spring application contexts are EnvironmentCapable, and the interface is used primarily

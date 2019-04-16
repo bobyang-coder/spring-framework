@@ -26,6 +26,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.Nullable;
 
 /**
+ *
+ * bob-ps：默认的PropertySources实现类
+ * 1.允许操作包含的属性
+ * 2.提供一个构造方法支持从另一个PropertySources中复制属性
+ *
  * The default implementation of the {@link PropertySources} interface.
  * Allows manipulation of contained property sources and provides a constructor
  * for copying an existing {@code PropertySources} instance.

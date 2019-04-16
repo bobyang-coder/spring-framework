@@ -193,6 +193,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Nullable
 	private Thread shutdownHook;
 
+	//资源解析器
 	/** ResourcePatternResolver used by this context */
 	private ResourcePatternResolver resourcePatternResolver;
 
@@ -208,10 +209,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Nullable
 	private ApplicationEventMulticaster applicationEventMulticaster;
 
-	//TODO bob-ps:监听器set
+	//监听器集合
 	/** Statically specified listeners */
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
+	//早起发布的事件集合
 	/** ApplicationEvents published early */
 	@Nullable
 	private Set<ApplicationEvent> earlyApplicationEvents;
@@ -440,6 +442,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * bob-ps:创建一个资源解析器，默认是一个支持ant路径风格的资源解析器
 	 * Return the ResourcePatternResolver to use for resolving location patterns
 	 * into Resource instances. Default is a
 	 * {@link org.springframework.core.io.support.PathMatchingResourcePatternResolver},
@@ -517,12 +520,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
-			//TODO bob-ps:准备刷新上下文
 			// Prepare this context for refreshing.
+			//准备刷新上下文
 			prepareRefresh();
 
-			//TODO bob-ps:调用子类刷新beanFactory
 			// Tell the subclass to refresh the internal bean factory.
+			//调用子类刷新beanFactory
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			//TODO bob-ps:准备bean factory
@@ -591,6 +594,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 为context的刷新做准备
+	 * - 设置启动时间
+	 * - 设置激活标志
+	 * - 执行属性源的任何初始化
+	 *
 	 * Prepare this context for refreshing, setting its startup date and
 	 * active flag as well as performing any initialization of property sources.
 	 */
@@ -604,6 +612,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment
+		//在上下文环境中初始化任何占位符属性源
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable
@@ -612,6 +621,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Allow for the collection of early ApplicationEvents,
 		// to be published once the multicaster is available...
+		//一旦广播器可用，就需要执行的ApplicationEvent
 		this.earlyApplicationEvents = new LinkedHashSet<>();
 	}
 
@@ -625,6 +635,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 通知子类刷新内部BeanFactory
+	 *
 	 * Tell the subclass to refresh the internal bean factory.
 	 * @return the fresh BeanFactory instance
 	 * @see #refreshBeanFactory()
@@ -1048,6 +1060,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 销毁该上下文管理的所有bean的模板方法
+	 *
 	 * Template method for destroying all beans that this context manages.
 	 * The default implementation destroy all cached singletons in this context,
 	 * invoking {@code DisposableBean.destroy()} and/or the specified

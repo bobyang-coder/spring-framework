@@ -51,7 +51,7 @@ import org.springframework.util.xml.SimpleSaxErrorHandler;
 import org.springframework.util.xml.XmlValidationModeDetector;
 
 /**
- * TODO bob-ps：读取xml中的bean定义
+ * TODO bob-ps：读取xml中的bean定义，实际委派 DocumentLoader 进行读取
  * Bean definition reader for XML bean definitions.
  * Delegates the actual XML document reading to an implementation
  * of the {@link BeanDefinitionDocumentReader} interface.
@@ -106,6 +106,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 	private boolean namespaceAware = false;
 
+	//TODO bob-ps:文档读取器对应的class类
 	private Class<?> documentReaderClass = DefaultBeanDefinitionDocumentReader.class;
 
 	private ProblemReporter problemReporter = new FailFastProblemReporter();
@@ -117,6 +118,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	@Nullable
 	private NamespaceHandlerResolver namespaceHandlerResolver;
 
+	//TODO bob-ps:spring默认的文档加载器
 	private DocumentLoader documentLoader = new DefaultDocumentLoader();
 
 	@Nullable
@@ -294,6 +296,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 
 	/**
+	 * bob-ps:从xml文件中加载bean定义
+	 *
 	 * Load bean definitions from the specified XML file.
 	 * @param resource the resource descriptor for the XML file
 	 * @return the number of bean definitions found
@@ -305,7 +309,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
-	 * TODO bob-ps:读取xml文件加载bean定义
+	 * bob-ps:读取xml文件加载bean定义
+	 *
 	 * Load bean definitions from the specified XML file.
 	 * @param encodedResource the resource descriptor for the XML file,
 	 * allowing to specify an encoding to use for parsing the file
@@ -318,6 +323,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			logger.info("Loading XML bean definitions from " + encodedResource.getResource());
 		}
 
+		//将获取本地线程中正在加载的资源
 		Set<EncodedResource> currentResources = this.resourcesCurrentlyBeingLoaded.get();
 		if (currentResources == null) {
 			currentResources = new HashSet<>(4);
@@ -330,10 +336,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 		try {
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
+				//将InputStream转换为sax的InputSource，并设置编码
 				InputSource inputSource = new InputSource(inputStream);
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
+				//调用真正的加载bean定义方法
 				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 			}
 			finally {
@@ -378,7 +386,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 
 	/**
-	 * TODO bob-ps:实际上从指定的XML文件加载bean定义。
+	 * bob-ps:真正的从指定的XML文件加载bean定义。
+	 *
 	 * Actually load bean definitions from the specified XML file.
 	 * @param inputSource the SAX InputSource to read from
 	 * @param resource the resource descriptor for the XML file
@@ -390,9 +399,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			throws BeanDefinitionStoreException {
 		try {
-			//TODO bob-ps:将xml文件解析成document
+			//将xml文件解析w3c的document对象
 			Document doc = doLoadDocument(inputSource, resource);
-			//TODO bob-ps:真正的注册bean定义
+			//真正的注册bean定义
 			return registerBeanDefinitions(doc, resource);
 		}
 		catch (BeanDefinitionStoreException ex) {
@@ -421,7 +430,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
-	 * TODO bob-ps:实际上使用配置的文档加载程序加载指定文档。
+	 * bob-ps:实际上使用配置的文档加载器去加载指定文档。
+	 *
 	 * Actually load the specified document using the configured DocumentLoader.
 	 * @param inputSource the SAX InputSource to read from
 	 * @param resource the resource descriptor for the XML file
@@ -495,7 +505,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
-	 * TODO bob-ps:注册给定DOM文档中包含的bean定义
+	 * bob-ps:注册给定DOM文档中包含的bean定义
+	 *
 	 * Register the bean definitions contained in the given DOM document.
 	 * Called by {@code loadBeanDefinitions}.
 	 * <p>Creates a new instance of the parser class and invokes
@@ -509,15 +520,17 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
-		//TODO bob-ps:创建默认的document文档读取器DefaultBeanDefinitionDocumentReader
+		// 创建默认的document文档读取器 DefaultBeanDefinitionDocumentReader
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
 		int countBefore = getRegistry().getBeanDefinitionCount();
-		//TODO bob-ps:DocumentReader解析document对象进行bean定义注册
+		// 使用DocumentReader解析document对象进行bean定义注册
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 
 	/**
+	 * bob-ps：创建BeanDefinitionDocumentReader用来从xml文档中读取bean定义
+	 *
 	 * Create the {@link BeanDefinitionDocumentReader} to use for actually
 	 * reading bean definitions from an XML document.
 	 * <p>The default implementation instantiates the specified "documentReaderClass".
@@ -528,7 +541,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
-	 * TODO bob-ps:创建读取上下文对象，用于DocumentReader中
+	 * bob-ps:创建读取上下文对象，用于 DocumentReader 中
+	 *
 	 * Create the {@link XmlReaderContext} to pass over to the document reader.
 	 */
 	public XmlReaderContext createReaderContext(Resource resource) {

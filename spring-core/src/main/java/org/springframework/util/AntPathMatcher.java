@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 import org.springframework.lang.Nullable;
 
 /**
+ * bob-ps:ant风格的路径匹配器
+ *
  * {@link PathMatcher} implementation for Ant-style path patterns.
  *
  * <p>Part of this mapping code has been kindly borrowed from <a href="http://ant.apache.org">Apache Ant</a>.

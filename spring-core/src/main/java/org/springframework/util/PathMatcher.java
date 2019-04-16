@@ -20,6 +20,8 @@ import java.util.Comparator;
 import java.util.Map;
 
 /**
+ * bob-ps:策略接口：基于字符串的路径匹配
+ *
  * Strategy interface for {@code String}-based path matching.
  *
  * <p>Used by {@link org.springframework.core.io.support.PathMatchingResourcePatternResolver},

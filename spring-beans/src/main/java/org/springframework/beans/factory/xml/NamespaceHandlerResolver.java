@@ -21,6 +21,9 @@ import org.springframework.lang.Nullable;
 /**
  *
  * TODO bob-ps:xml命名空间解析器，
+ *
+ * 即根据命名空间uri找到对应命名空间处理器
+ *
  * Used by the {@link org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader} to
  * locate a {@link NamespaceHandler} implementation for a particular namespace URI.
  *

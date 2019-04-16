@@ -117,6 +117,8 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 
 	/**
+	 * 注册给定根元素中每个bean定义
+	 *
 	 * Register each bean definition within the given root {@code <beans/>} element.
 	 */
 	protected void doRegisterBeanDefinitions(Element root) {
@@ -129,6 +131,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		BeanDefinitionParserDelegate parent = this.delegate;
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
+		//判断元素是否是属于默认的命名空间
 		if (this.delegate.isDefaultNamespace(root)) {
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
@@ -145,6 +148,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		preProcessXml(root);
+		//解析bean定义
 		parseBeanDefinitions(root, this.delegate);
 		postProcessXml(root);
 
@@ -160,22 +164,26 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	/**
-	 * TODO bob-ps:解析bean定义
+	 * bob-ps:解析bean定义
 	 * Parse the elements at the root level in the document:
 	 * "import", "alias", "bean".
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+		//判断root元素是否是默认命名空间
 		if (delegate.isDefaultNamespace(root)) {
+			//解析root元素下的子元素
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
 				if (node instanceof Element) {
 					Element ele = (Element) node;
 					if (delegate.isDefaultNamespace(ele)) {
+						//处理默认命名空间的元素标签
 						parseDefaultElement(ele, delegate);
 					}
 					else {
+						//处理其他自定义的元素标签
 						delegate.parseCustomElement(ele);
 					}
 				}
@@ -186,29 +194,30 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 	}
 
-	//TODO bob-ps:解析默认的元素 import、alias、bean、beans标签
+	//bob-ps:解析默认的元素 import、alias、bean、beans标签
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
-			//TODO bob-ps:导入import元素对应的xml文件
+			//导入import元素对应的xml文件
 			importBeanDefinitionResource(ele);
 		}
 		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
-			//TODO bob-ps:处理alias标签元素
+			//处理alias标签元素
 			processAliasRegistration(ele);
 		}
 		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
-			//TODO bob-ps:处理bean标签元素
+			//处理bean标签元素
 			processBeanDefinition(ele, delegate);
 		}
 		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
 			// recurse
-			//TODO bob-ps:递归注册bean定义
+			//递归注册bean定义
 			doRegisterBeanDefinitions(ele);
 		}
 	}
 
 	/**
-	 * TODO bob-ps:解析import元素标签，导入import元素对应的xml文件
+	 * bob-ps:解析import元素标签，导入import元素对应的xml文件
+	 *
 	 * Parse an "import" element and load the bean definitions
 	 * from the given resource into the bean factory.
 	 */
@@ -224,6 +233,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 		Set<Resource> actualResources = new LinkedHashSet<>(4);
 
+		//判断uri是否是绝对路径
 		// Discover whether the location is an absolute or relative URI
 		boolean absoluteLocation = false;
 		try {

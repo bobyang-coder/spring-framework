@@ -24,6 +24,10 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
+ * bob-ps：
+ * BeanFactory的扩展类，可以列举所有的bean实例，而非根据client请求的beanName逐个尝试查询。
+ * 预加载所有bean定义（如基于XML的工厂）的beanFactory实现可能实现此接口
+ *
  * Extension of the {@link BeanFactory} interface to be implemented by bean factories
  * that can enumerate all their bean instances, rather than attempting bean lookup
  * by name one by one as requested by clients. BeanFactory implementations that

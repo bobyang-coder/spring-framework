@@ -45,6 +45,8 @@ import org.springframework.lang.Nullable;
 public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 
 	/**
+	 * TODO bob-ps：元素标签名称 对应的 bean定义解析器
+	 *
 	 * Stores the {@link BeanDefinitionParser} implementations keyed by the
 	 * local name of the {@link Element Elements} they handle.
 	 */
@@ -64,23 +66,31 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 
 
 	/**
+	 * bob-ps:解析对应的元素
+	 *
 	 * Parses the supplied {@link Element} by delegating to the {@link BeanDefinitionParser} that is
 	 * registered for that {@link Element}.
 	 */
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
+		//找到元素对应的bean定义解析器
 		BeanDefinitionParser parser = findParserForElement(element, parserContext);
+		//解析bean定义
 		return (parser != null ? parser.parse(element, parserContext) : null);
 	}
 
 	/**
+	 * bob-ps:
+	 *
 	 * Locates the {@link BeanDefinitionParser} from the register implementations using
 	 * the local name of the supplied {@link Element}.
 	 */
 	@Nullable
 	private BeanDefinitionParser findParserForElement(Element element, ParserContext parserContext) {
+		//获取元素对应的标签名
 		String localName = parserContext.getDelegate().getLocalName(element);
+		//根据标签名称找到对应的bean定义解析器
 		BeanDefinitionParser parser = this.parsers.get(localName);
 		if (parser == null) {
 			parserContext.getReaderContext().fatal(

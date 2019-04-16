@@ -119,22 +119,28 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 
 	/**
-	 * TODO bob-ps:此实现对该上下文的底层bean工厂进行实际刷新，关闭先前的bean工厂（如果有的话），并为上下文的生命周期的下一阶段初始化新鲜的bean工厂。
+	 * 此实现是执行该上下文对BeanFactory的实际刷新
+	 *
+	 * 关闭先前的bean工厂（如果有的话），并为上下文的生命周期的下一阶段初始化新鲜的bean工厂。
+	 *
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		//如果已经有BeanFactory，先销毁再关闭
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
 		}
 		try {
-			//TODO bob-ps:创建一个DefaultListableBeanFactory对象
+			//创建一个DefaultListableBeanFactory对象
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
+			//根据上下文的一些配置自定义BeanFactory
 			customizeBeanFactory(beanFactory);
+			//加载bean定义
 			loadBeanDefinitions(beanFactory);
 			synchronized (this.beanFactoryMonitor) {
 				this.beanFactory = beanFactory;
@@ -213,6 +219,8 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
+	 * 根据上下文自定义内部的BeanFactory
+	 *
 	 * Customize the internal bean factory used by this context.
 	 * Called for each {@link #refresh()} attempt.
 	 * <p>The default implementation applies this context's
@@ -228,9 +236,11 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 		if (this.allowBeanDefinitionOverriding != null) {
+			//设置是否允许相同名称的bean覆盖beanDefinition
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
 		if (this.allowCircularReferences != null) {
+			//设置是否允许循环依赖
 			beanFactory.setAllowCircularReferences(this.allowCircularReferences);
 		}
 	}

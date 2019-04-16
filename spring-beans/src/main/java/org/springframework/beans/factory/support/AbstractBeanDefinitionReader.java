@@ -217,10 +217,13 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 					"Cannot import bean definitions from location [" + location + "]: no ResourceLoader available");
 		}
 
+		//如果资源加载器 是 资源
 		if (resourceLoader instanceof ResourcePatternResolver) {
 			// Resource pattern matching available.
 			try {
+				//根据路径获取Resource
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
+				//根据Resource加载bean定义
 				int loadCount = loadBeanDefinitions(resources);
 				if (actualResources != null) {
 					for (Resource resource : resources) {
@@ -239,6 +242,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 		}
 		else {
 			// Can only load single resources by absolute URL.
+			//根据绝对url获取Resource
 			Resource resource = resourceLoader.getResource(location);
 			int loadCount = loadBeanDefinitions(resource);
 			if (actualResources != null) {

@@ -28,6 +28,8 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.lang.Nullable;
 
 /**
+ * bob-ps:解析器上下文，传参使用
+ *
  * Context that gets passed along a bean definition parsing process,
  * encapsulating all relevant configuration as well as state.
  * Nested inside an {@link XmlReaderContext}.

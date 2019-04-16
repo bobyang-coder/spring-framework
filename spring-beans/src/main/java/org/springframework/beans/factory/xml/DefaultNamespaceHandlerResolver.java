@@ -33,6 +33,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
+ *
+ * 默认的
+ *
  * Default implementation of the {@link NamespaceHandlerResolver} interface.
  * Resolves namespace URIs to implementation classes based on the mappings
  * contained in mapping file.
@@ -50,6 +53,8 @@ import org.springframework.util.CollectionUtils;
 public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver {
 
 	/**
+	 * 映射文件的存储路径，可以在多个jar文件下配置
+	 *
 	 * The location to look for the mapping files. Can be present in multiple JAR files.
 	 */
 	public static final String DEFAULT_HANDLER_MAPPINGS_LOCATION = "META-INF/spring.handlers";
@@ -62,9 +67,11 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	@Nullable
 	private final ClassLoader classLoader;
 
+	//bob-ps:搜索映射文件的路径
 	/** Resource location to search for */
 	private final String handlerMappingsLocation;
 
+	//bob-ps:存储命名空间uri对应的 NamespaceHandler 命名空间处理器的class名称
 	/** Stores the mappings from namespace URI to NamespaceHandler class name / instance */
 	@Nullable
 	private volatile Map<String, Object> handlerMappings;
@@ -107,6 +114,8 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 
 
 	/**
+	 * 根据命名空间uri从配置的 NamespaceHandler 映射关系中获取到适合的 NamespaceHandler
+	 *
 	 * Locate the {@link NamespaceHandler} for the supplied namespace URI
 	 * from the configured mappings.
 	 * @param namespaceUri the relevant namespace URI
@@ -131,7 +140,9 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 					throw new FatalBeanException("Class [" + className + "] for namespace [" + namespaceUri +
 							"] does not implement the [" + NamespaceHandler.class.getName() + "] interface");
 				}
+				//实例化对象
 				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
+				//调用init方法进行初始化
 				namespaceHandler.init();
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
@@ -148,6 +159,8 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	}
 
 	/**
+	 * 懒加载 NamespaceHandler 的映射
+	 *
 	 * Load the specified NamespaceHandler mappings lazily.
 	 */
 	private Map<String, Object> getHandlerMappings() {
