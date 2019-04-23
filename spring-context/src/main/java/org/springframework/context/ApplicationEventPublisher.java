@@ -17,6 +17,10 @@
 package org.springframework.context;
 
 /**
+ * bob-ps:应用事件发布器，封装事件发布功能的接口，用作 ApplicationContext 的超级接口。
+ *
+ *
+ *
  * Interface that encapsulates event publication functionality.
  * Serves as super-interface for {@link ApplicationContext}.
  *

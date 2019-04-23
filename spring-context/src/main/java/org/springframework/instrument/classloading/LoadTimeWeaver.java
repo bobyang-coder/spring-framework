@@ -19,6 +19,8 @@ package org.springframework.instrument.classloading;
 import java.lang.instrument.ClassFileTransformer;
 
 /**
+ * bob-ps:加载时编织器
+ *
  * Defines the contract for adding one or more
  * {@link ClassFileTransformer ClassFileTransformers} to a {@link ClassLoader}.
  *

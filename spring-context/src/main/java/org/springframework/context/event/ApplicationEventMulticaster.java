@@ -22,6 +22,10 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
 /**
+ * bob-ps:应用事件广播器，管理 ApplicationListener 对象和推送事件给它们。
+ *
+ * ApplicationEventPublisher 使用 ApplicationEventMulticaster 作为委派，实际去发布事件。
+ *
  * Interface to be implemented by objects that can manage a number of
  * {@link ApplicationListener} objects, and publish events to them.
  *
