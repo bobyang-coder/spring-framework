@@ -540,21 +540,21 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			 */
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			//TODO bob-ps:准备bean factory
 			// Prepare the bean factory for use in this context.
+			//准备bean factory
 			prepareBeanFactory(beanFactory);
 
 			try {
-				//TODO bob-ps:允许子类对bean factory进行操作的抽象方法
 				// Allows post-processing of the bean factory in context subclasses.
+				//空实现，允许子类对bean factory进行操作的抽象方法
 				postProcessBeanFactory(beanFactory);
 
-				//TODO bob-ps:调用在上下文中注册为bean的工厂处理器
 				// Invoke factory processors registered as beans in the context.
+				//调用在上下文中注册为bean的工厂处理器
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				//TODO bob-ps:注册bean处理器，拦截bean创建
 				// Register bean processors that intercept bean creation.
+				// 注册bean处理器，拦截bean创建
 				registerBeanPostProcessors(beanFactory);
 
 				//TODO bob-ps:初始化上下文的消息源

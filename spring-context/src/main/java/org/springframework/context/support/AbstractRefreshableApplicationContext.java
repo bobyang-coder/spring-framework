@@ -121,7 +121,10 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	/**
 	 * bob-ps:此实现是执行该上下文对BeanFactory的实际刷新
 	 *
-	 * 关闭先前的bean工厂（如果有的话），并为上下文的生命周期的下一阶段初始化新鲜的bean工厂。
+	 * - 关闭先前的bean工厂（如果有的话）
+	 * - 为上下文的生命周期的下一阶段初始化新鲜的bean工厂。
+	 * - 用上下文的配置自定义BeanFactory
+	 * - 加载bean定义
 	 *
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and

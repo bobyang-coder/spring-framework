@@ -17,6 +17,8 @@
 package org.springframework.core;
 
 /**
+ * bob-ps:Ordered接口的扩展，标识一个优先排序(实现 PriorityOrdered 标识的对象优先执行于相同等级的 Ordered 对象 )
+ *
  * Extension of the {@link Ordered} interface, expressing a <em>priority</em>
  * ordering: order values expressed by {@code PriorityOrdered} objects
  * always apply before same order values expressed by <em>plain</em>
