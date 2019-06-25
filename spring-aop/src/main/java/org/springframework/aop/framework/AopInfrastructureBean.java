@@ -17,6 +17,10 @@
 package org.springframework.aop.framework;
 
 /**
+ * bob-ps：标记接口，
+ * 1. 为了表示bean是一个spring基础设置，
+ * 2. 特别是，任何实现该接口的bean都不受自动代理的影响，即便是被切入点匹配
+ *
  * Marker interface that indicates a bean that is part of Spring's
  * AOP infrastructure. In particular, this implies that any such bean
  * is not subject to auto-proxying, even if a pointcut would match.

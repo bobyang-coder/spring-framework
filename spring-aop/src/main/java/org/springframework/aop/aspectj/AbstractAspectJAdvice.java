@@ -97,6 +97,9 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 
 	private final Class<?>[] parameterTypes;
 
+	/**
+	 * bob-ps:通知方法，我们自己写的方法
+	 */
 	protected transient Method aspectJAdviceMethod;
 
 	private final AspectJExpressionPointcut pointcut;
@@ -612,6 +615,8 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 
 
 	/**
+	 * bob-ps:调用通知方法
+	 *
 	 * Invoke the advice method.
 	 * @param jpMatch the JoinPointMatch that matched this execution join point
 	 * @param returnValue the return value from the method execution (may be null)

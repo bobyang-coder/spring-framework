@@ -27,6 +27,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * bob-ps:方法匹配器，用于判断方法是否带有指定注解
+ *
  * Simple MethodMatcher that looks for a specific Java 5 annotation
  * being present on a method (checking both the method on the invoked
  * interface, if any, and the corresponding method on the target class).
@@ -39,6 +41,9 @@ public class AnnotationMethodMatcher extends StaticMethodMatcher {
 
 	private final Class<? extends Annotation> annotationType;
 
+	/**
+	 * bob-ps：是否检查遗传
+	 */
 	private final boolean checkInherited;
 
 
@@ -77,6 +82,7 @@ public class AnnotationMethodMatcher extends StaticMethodMatcher {
 			return false;
 		}
 		// The method may be on an interface, so let's check on the target class as well.
+		// 方法可能是一个接口方法，所以需要找它的实现类的该方法进行判断
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 		return (specificMethod != method && matchesMethod(specificMethod));
 	}

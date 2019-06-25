@@ -27,6 +27,8 @@ import org.springframework.core.NamedThreadLocal;
 import org.springframework.core.PriorityOrdered;
 
 /**
+ * bob-ps:暴露调用过程的方法拦截器，将当前 MethodInvocation 放入本地线程中，供其他地方使用
+ *
  * Interceptor that exposes the current {@link org.aopalliance.intercept.MethodInvocation}
  * as a thread-local object. We occasionally need to do this; for example, when a pointcut
  * (e.g. an AspectJ expression pointcut) needs to know the full invocation context.

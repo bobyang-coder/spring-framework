@@ -23,6 +23,8 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 
 /**
+ * bob-ps：类过滤器，用于判断类上是否有执行注解
+ *
  * Simple ClassFilter that looks for a specific Java 5 annotation
  * being present on a class.
  *

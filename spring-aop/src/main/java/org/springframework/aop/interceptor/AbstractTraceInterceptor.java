@@ -27,6 +27,8 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.lang.Nullable;
 
 /**
+ * bob-ps:为了打印tracing的方法拦截器，只有logger.isTraceEnabled()是开启状态，才有执行打印
+ *
  * Base {@code MethodInterceptor} implementation for tracing.
  *
  * <p>By default, log messages are written to the log for the interceptor class,
