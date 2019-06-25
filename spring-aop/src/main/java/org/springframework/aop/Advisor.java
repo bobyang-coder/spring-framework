@@ -19,6 +19,13 @@ package org.springframework.aop;
 import org.aopalliance.aop.Advice;
 
 /**
+ * bob-ps：
+ * - 持有advice(在连接点采取的行为)对象
+ * - 过滤确定advice的适用性
+ *
+ * 此接口不提供给spring用户使用，但允许支持不同类型的advice的通用性
+ *
+ *
  * Base interface holding AOP <b>advice</b> (action to take at a joinpoint)
  * and a filter determining the applicability of the advice (such as
  * a pointcut). <i>This interface is not for use by Spring users, but to

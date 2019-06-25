@@ -270,6 +270,8 @@ public abstract class AopUtils {
 	}
 
 	/**
+	 * bob-ps:判断给定的顾问是否吃给定的class
+	 *
 	 * Can the given advisor apply at all on the given class?
 	 * <p>This is an important test as it can be used to optimize out a advisor for a class.
 	 * This version also takes into account introductions (for IntroductionAwareMethodMatchers).
@@ -294,6 +296,8 @@ public abstract class AopUtils {
 	}
 
 	/**
+	 * bob-ps：决定哪些顾问使用于该class
+	 *
 	 * Determine the sublist of the {@code candidateAdvisors} list
 	 * that is applicable to the given class.
 	 * @param candidateAdvisors the Advisors to evaluate

@@ -47,17 +47,22 @@ import org.springframework.util.Assert;
 public abstract class AopConfigUtils {
 
 	/**
+	 * 内部管理的自动代理创建器的bean名称
 	 * The bean name of the internally managed auto-proxy creator.
 	 */
 	public static final String AUTO_PROXY_CREATOR_BEAN_NAME =
 			"org.springframework.aop.config.internalAutoProxyCreator";
 
 	/**
+	 * 以升级顺序存储自动代理创建者类。
+	 *
 	 * Stores the auto proxy creator classes in escalation order.
 	 */
 	private static final List<Class<?>> APC_PRIORITY_LIST = new ArrayList<>();
 
 	/**
+	 * 设置升级列表。
+	 *
 	 * Setup the escalation list.
 	 */
 	static {
@@ -99,11 +104,12 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry,
 			@Nullable Object source) {
-
+		//注册 aop创建器 : AnnotationAwareAspectJAutoProxyCreator.class
 		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
 	}
 
 	public static void forceAutoProxyCreatorToUseClassProxying(BeanDefinitionRegistry registry) {
+		//强制自动代理创建器用类代理
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition definition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			definition.getPropertyValues().add("proxyTargetClass", Boolean.TRUE);
@@ -118,7 +124,8 @@ public abstract class AopConfigUtils {
 	}
 
 	/**
-	 * TODO bob-ps:根据需要注册或升级Auto proxy creator
+	 * bob-ps:根据需要注册或升级Auto proxy creator
+	 *
 	 * @param cls
 	 * @param registry
 	 * @param source
@@ -133,7 +140,7 @@ public abstract class AopConfigUtils {
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
-				//TODO bob-ps:根据优先级设置
+				//根据优先级设置
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
 				int requiredPriority = findPriorityForClass(cls);
 				if (currentPriority < requiredPriority) {
@@ -151,6 +158,11 @@ public abstract class AopConfigUtils {
 		return beanDefinition;
 	}
 
+	/**
+	 * 获取类的优先级
+	 * @param clazz
+	 * @return
+	 */
 	private static int findPriorityForClass(Class<?> clazz) {
 		return APC_PRIORITY_LIST.indexOf(clazz);
 	}
