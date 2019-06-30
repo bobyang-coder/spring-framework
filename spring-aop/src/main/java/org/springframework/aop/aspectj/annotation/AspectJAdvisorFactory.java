@@ -27,6 +27,8 @@ import org.springframework.aop.framework.AopConfigException;
 import org.springframework.lang.Nullable;
 
 /**
+ * bob-ps:工厂接口 从被AspectJ注解注释的类中创建aop顾问
+ *
  * Interface for factories that can create Spring AOP Advisors from classes
  * annotated with AspectJ annotation syntax.
  *

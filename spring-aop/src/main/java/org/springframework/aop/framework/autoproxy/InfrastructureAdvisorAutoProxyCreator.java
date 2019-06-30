@@ -21,6 +21,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.lang.Nullable;
 
 /**
+ * bob-ps： 仅考虑基础设施顾问bean的创建，忽略任务应用定义的顾问
+ *
  * Auto-proxy creator that considers infrastructure Advisor beans only,
  * ignoring any application-defined Advisors.
  *

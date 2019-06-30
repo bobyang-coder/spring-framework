@@ -185,6 +185,8 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
+	 * bob-ps:获取给定类型的所有bean名称，包括在祖先工厂中定义的那些名称
+	 *
 	 * Get all bean names for the given type, including those defined in ancestor
 	 * factories. Will return unique names in case of overridden bean definitions.
 	 * <p>Does consider objects created by FactoryBeans if the "allowEagerInit"

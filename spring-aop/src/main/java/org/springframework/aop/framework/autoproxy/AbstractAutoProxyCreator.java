@@ -296,7 +296,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 	/**
-	 * 用配置的拦截器创建代理
+	 * 在实例化bean之后执行，用配置的拦截器创建代理
 	 *
 	 * Create a proxy with the configured interceptors if the bean is
 	 * identified as one to proxy by the subclass.

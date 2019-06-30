@@ -44,6 +44,9 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 
 	private final AspectJAdvisorFactory advisorFactory;
 
+	/**
+	 * 缓存:被Aspect注解标识的bean的名称
+	 */
 	@Nullable
 	private volatile List<String> aspectBeanNames;
 
@@ -74,6 +77,8 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 
 
 	/**
+	 * bob-ps： 在BeanFactory中查找被AspectJ注解标识的bean，生成对应Advisor列表
+	 *
 	 * Look for AspectJ-annotated aspect beans in the current bean factory,
 	 * and return to a list of Spring AOP Advisors representing them.
 	 * <p>Creates a Spring Advisor for each AspectJ advice method.
@@ -89,18 +94,22 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 				if (aspectNames == null) {
 					List<Advisor> advisors = new LinkedList<>();
 					aspectNames = new LinkedList<>();
+					//查询BeanFactory中Object类型的bean，即所有的bean
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
+						//过滤掉非合格的
 						if (!isEligibleBean(beanName)) {
 							continue;
 						}
 						// We must be careful not to instantiate beans eagerly as in this case they
 						// would be cached by the Spring container but would not have been weaved.
+						//我们必须小心不要急切地实例化bean，因为在这种情况下，它们将被Spring容器缓存但不会被编织。
 						Class<?> beanType = this.beanFactory.getType(beanName);
 						if (beanType == null) {
 							continue;
 						}
+						//过滤掉不是被Aspect注解标识的
 						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
@@ -153,6 +162,8 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	}
 
 	/**
+	 * 判断Aspect的bean是想要的不
+	 *
 	 * Return whether the aspect bean with the given name is eligible.
 	 * @param beanName the name of the aspect bean
 	 * @return whether the bean is eligible

@@ -20,7 +20,7 @@ import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 
 /**
- * bob-ps:实现的接口提供AspectJ方面的实例。与Spring的bean工厂脱钩。
+ * bob-ps:实现的接口提供AspectJ切面的实例。与Spring的bean工厂脱钩。
  *
  * Interface implemented to provide an instance of an AspectJ aspect.
  * Decouples from Spring's bean factory.

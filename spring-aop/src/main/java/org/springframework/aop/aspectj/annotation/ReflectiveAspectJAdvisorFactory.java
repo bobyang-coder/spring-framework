@@ -55,6 +55,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.comparator.InstanceComparator;
 
 /**
+ * bob-ps:通过反射调用响应的通知方法
+ *
  * Factory that can create Spring AOP Advisors given AspectJ classes from
  * classes honoring the AspectJ 5 annotation syntax, using reflection to
  * invoke the corresponding advice methods.
@@ -112,15 +114,18 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 	@Override
 	public List<Advisor> getAdvisors(MetadataAwareAspectInstanceFactory aspectInstanceFactory) {
+		//1. 对切面类进行基本校验
 		Class<?> aspectClass = aspectInstanceFactory.getAspectMetadata().getAspectClass();
 		String aspectName = aspectInstanceFactory.getAspectMetadata().getAspectName();
 		validate(aspectClass);
 
 		// We need to wrap the MetadataAwareAspectInstanceFactory with a decorator
 		// so that it will only instantiate once.
+		//2. 包装一下 MetadataAwareAspectInstanceFactory ，目的是为了让其只实例化一次
 		MetadataAwareAspectInstanceFactory lazySingletonAspectInstanceFactory =
 				new LazySingletonAspectInstanceFactoryDecorator(aspectInstanceFactory);
 
+		//3. 遍历标注为通知的方法，生成Advisor
 		List<Advisor> advisors = new LinkedList<>();
 		for (Method method : getAdvisorMethods(aspectClass)) {
 			Advisor advisor = getAdvisor(method, lazySingletonAspectInstanceFactory, advisors.size(), aspectName);
@@ -150,6 +155,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		final List<Method> methods = new LinkedList<>();
 		ReflectionUtils.doWithMethods(aspectClass, method -> {
 			// Exclude pointcuts
+			// 排除@Pointcut注释的方法
 			if (AnnotationUtils.getAnnotation(method, Pointcut.class) == null) {
 				methods.add(method);
 			}

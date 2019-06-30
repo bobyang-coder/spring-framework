@@ -75,9 +75,9 @@ public abstract class AopNamespaceUtils {
 		//如果有必要，注册Aspect注解自动代理创建器
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
-		//如果有必要，使用class代理
+		//如果有必要，使用class代理，其实就是强制使用cglib代理，默认使用的是jdk代理
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
-		//如果有必要，注册组件
+		//如果有必要，注册组件 TODO 待了解具体含义
 		registerComponentIfNecessary(beanDefinition, parserContext);
 	}
 

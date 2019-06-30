@@ -59,12 +59,15 @@ public class BeanFactoryAdvisorRetrievalHelper {
 
 
 	/**
+	 * bob-ps:在当前BeanFactory中查找所有合适的Advisor，忽略FactoryBean和正在创建的bean
+	 *
 	 * Find all eligible Advisor beans in the current bean factory,
 	 * ignoring FactoryBeans and excluding beans that are currently in creation.
 	 * @return the list of {@link org.springframework.aop.Advisor} beans
 	 * @see #isEligibleBean
 	 */
 	public List<Advisor> findAdvisorBeans() {
+		//1. 从BeanFactory中获取Advisor类型的bean，并进行缓存
 		// Determine list of advisor bean names, if not cached already.
 		String[] advisorNames = null;
 		synchronized (this) {
@@ -80,7 +83,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 		if (advisorNames.length == 0) {
 			return new LinkedList<>();
 		}
-
+		//2. 过滤不合格的和正在创建的bean
 		List<Advisor> advisors = new LinkedList<>();
 		for (String name : advisorNames) {
 			if (isEligibleBean(name)) {

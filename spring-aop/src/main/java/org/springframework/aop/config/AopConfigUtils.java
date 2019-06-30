@@ -61,7 +61,7 @@ public abstract class AopConfigUtils {
 	private static final List<Class<?>> APC_PRIORITY_LIST = new ArrayList<>();
 
 	/**
-	 * 设置升级列表。
+	 * 设置Aop创建器的优先级列表。
 	 *
 	 * Setup the escalation list.
 	 */
@@ -104,7 +104,7 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry,
 			@Nullable Object source) {
-		//注册 aop创建器 : AnnotationAwareAspectJAutoProxyCreator.class
+		//注册或者升级aop创建器 : AnnotationAwareAspectJAutoProxyCreator.class
 		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
 	}
 
@@ -159,7 +159,7 @@ public abstract class AopConfigUtils {
 	}
 
 	/**
-	 * 获取类的优先级
+	 * 根据类获取aop创建器的的优先级
 	 * @param clazz
 	 * @return
 	 */
@@ -167,6 +167,11 @@ public abstract class AopConfigUtils {
 		return APC_PRIORITY_LIST.indexOf(clazz);
 	}
 
+	/**
+	 * 根据类名称获取aop创建器的的优先级
+	 * @param className
+	 * @return
+	 */
 	private static int findPriorityForClass(@Nullable String className) {
 		for (int i = 0; i < APC_PRIORITY_LIST.size(); i++) {
 			Class<?> clazz = APC_PRIORITY_LIST.get(i);

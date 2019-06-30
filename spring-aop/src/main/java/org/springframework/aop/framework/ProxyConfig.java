@@ -21,6 +21,8 @@ import java.io.Serializable;
 import org.springframework.util.Assert;
 
 /**
+ * bob-ps:用于创建代理的配置，确保所有代理创建拥有统一的配置
+ *
  * Convenience superclass for configuration used in creating proxies,
  * to ensure that all proxy creators have consistent properties.
  *

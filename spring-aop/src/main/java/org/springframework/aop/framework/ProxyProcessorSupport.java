@@ -28,6 +28,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * bob-ps：具有代理处理器通用功能的基类
+ * 特别是ClassLoader管理和evaluateProxyInterfaces算法
+ *
  * Base class with common functionality for proxy processors, in particular
  * ClassLoader management and the {@link #evaluateProxyInterfaces} algorithm.
  *
