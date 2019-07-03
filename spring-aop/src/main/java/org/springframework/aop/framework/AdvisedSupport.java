@@ -75,7 +75,10 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/** Package-protected to allow direct access for efficiency */
 	TargetSource targetSource = EMPTY_TARGET_SOURCE;
 
-	/** Whether the Advisors are already filtered for the specific target class */
+	/**
+	 * 是否已针对特定目标类过滤了顾问
+	 *
+	 * Whether the Advisors are already filtered for the specific target class */
 	private boolean preFiltered = false;
 
 	/** The AdvisorChainFactory to use */
@@ -201,6 +204,8 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * bob-ps:添加新的代理接口
+	 *
 	 * Add a new proxied interface.
 	 * @param intf the additional interface to proxy
 	 */
@@ -488,6 +493,8 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	}
 
 	/**
+	 * 通知发生变化时调用
+	 *
 	 * Invoked when advice has changed.
 	 */
 	protected void adviceChanged() {

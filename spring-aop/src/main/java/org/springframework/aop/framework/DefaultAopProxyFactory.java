@@ -22,6 +22,13 @@ import java.lang.reflect.Proxy;
 import org.springframework.aop.SpringProxy;
 
 /**
+ * aop代理工厂默认实现，用于创建 CGLIB 代理 or jdk动态代理
+ *
+ * 当满足以下任一条件则创建  CGLIB 代理
+ * - optimize：设置为需要优化
+ * - proxyTargetClass标识为 true
+ * - 没有指定代理接口
+ *
  * Default {@link AopProxyFactory} implementation, creating either a CGLIB proxy
  * or a JDK dynamic proxy.
  *
@@ -54,6 +61,7 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 				throw new AopConfigException("TargetSource cannot determine target class: " +
 						"Either an interface or a target is required for proxy creation.");
 			}
+			//如果目标类是接口 或者 是代理Class，就都是用jdk代理
 			if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {
 				return new JdkDynamicAopProxy(config);
 			}

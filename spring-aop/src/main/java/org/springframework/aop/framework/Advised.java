@@ -23,6 +23,12 @@ import org.springframework.aop.TargetClassAware;
 import org.springframework.aop.TargetSource;
 
 /**
+ *
+ * bob-ps:
+ * 该接口被持有aop代理工厂配置的类实现，这个配置包括拦截器、通知、Advisor和被代理的接口
+ *
+ * 任意一个从spring中获取的aop代理都可以转换为这个接口去操作它的aop通知
+ *
  * Interface to be implemented by classes that hold the configuration
  * of a factory of AOP proxies. This configuration includes the
  * Interceptors and other advice, Advisors, and the proxied interfaces.

@@ -17,6 +17,8 @@
 package org.springframework.aop;
 
 /**
+ * bob-ps:切入点
+ *
  * Core Spring pointcut abstraction.
  *
  * <p>A pointcut is composed of a {@link ClassFilter} and a {@link MethodMatcher}.

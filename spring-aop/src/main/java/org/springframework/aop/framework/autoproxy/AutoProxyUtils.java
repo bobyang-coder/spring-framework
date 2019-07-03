@@ -96,6 +96,8 @@ public abstract class AutoProxyUtils {
 	}
 
 	/**
+	 * bob-ps:如果可能，公开指定bean的给定目标类。也就是对beanFactory中beanName对应的bean定义添加属性，
+	 *
 	 * Expose the given target class for the specified bean, if possible.
 	 * @param beanFactory the containing ConfigurableListableBeanFactory
 	 * @param beanName the name of the bean

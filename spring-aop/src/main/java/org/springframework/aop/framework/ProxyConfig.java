@@ -35,7 +35,9 @@ public class ProxyConfig implements Serializable {
 	/** use serialVersionUID from Spring 1.2 for interoperability */
 	private static final long serialVersionUID = -8409359707199703185L;
 
-
+	/**
+	 * 表示：是否直接代理目标类以及任何接口。
+	 */
 	private boolean proxyTargetClass = false;
 
 	private boolean optimize = false;
@@ -48,6 +50,8 @@ public class ProxyConfig implements Serializable {
 
 
 	/**
+	 * bob-ps:设置是否直接代理目标类，而不仅仅是代理特定接口。默认为“false”。
+	 *
 	 * Set whether to proxy the target class directly, instead of just proxying
 	 * specific interfaces. Default is "false".
 	 * <p>Set this to "true" to force proxying for the TargetSource's exposed
@@ -86,6 +90,8 @@ public class ProxyConfig implements Serializable {
 	}
 
 	/**
+	 * 返回代理是否应执行积极的优化。
+	 *
 	 * Return whether proxies should perform aggressive optimizations.
 	 */
 	public boolean isOptimize() {

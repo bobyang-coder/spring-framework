@@ -25,6 +25,8 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.Assert;
 
 /**
+ * 按优先顺序排列AspectJ建议/顾问（非调用顺序）。
+ *
  * Orders AspectJ advice/advisors by precedence (<i>not</i> invocation order).
  *
  * <p>Given two pieces of advice, {@code a} and {@code b}:

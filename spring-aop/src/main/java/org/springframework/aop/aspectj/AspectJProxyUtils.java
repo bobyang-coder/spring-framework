@@ -32,6 +32,8 @@ import org.springframework.aop.interceptor.ExposeInvocationInterceptor;
 public abstract class AspectJProxyUtils {
 
 	/**
+	 * bob-ps：添加特殊的 advisor 到包含 AspectJ 顾问的代理链中
+	 *
 	 * Add special advisors if necessary to work with a proxy chain that contains AspectJ advisors.
 	 * This will expose the current Spring AOP invocation (necessary for some AspectJ pointcut matching)
 	 * and make available the current AspectJ JoinPoint. The call will have no effect if there are no
