@@ -53,6 +53,8 @@ public abstract class AspectJProxyUtils {
 				}
 			}
 			if (foundAspectJAdvice && !advisors.contains(ExposeInvocationInterceptor.ADVISOR)) {
+				// ExposeInvocationInterceptor 类的目的就是讲方法调用链 MethodInvocation 防止本地线程池中，
+				// 方便后续使用，所以它放在第一个
 				advisors.add(0, ExposeInvocationInterceptor.ADVISOR);
 				return true;
 			}

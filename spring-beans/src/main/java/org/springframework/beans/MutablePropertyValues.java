@@ -39,6 +39,9 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("serial")
 public class MutablePropertyValues implements PropertyValues, Serializable {
 
+	/**
+	 * bob-ps： bean对象所需要的参数列表
+	 */
 	private final List<PropertyValue> propertyValueList;
 
 	@Nullable

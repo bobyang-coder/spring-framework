@@ -102,8 +102,14 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 */
 	protected transient Method aspectJAdviceMethod;
 
+	/**
+	 * bob-ps:切入点
+	 */
 	private final AspectJExpressionPointcut pointcut;
 
+	/**
+	 * bob-ps：切面实例对象工厂
+	 */
 	private final AspectInstanceFactory aspectInstanceFactory;
 
 	/**

@@ -270,7 +270,7 @@ public abstract class AopUtils {
 	}
 
 	/**
-	 * bob-ps:判断给定的顾问是否吃给定的class
+	 * bob-ps:判断给定的顾问是否能应用给定的class
 	 *
 	 * Can the given advisor apply at all on the given class?
 	 * <p>This is an important test as it can be used to optimize out a advisor for a class.

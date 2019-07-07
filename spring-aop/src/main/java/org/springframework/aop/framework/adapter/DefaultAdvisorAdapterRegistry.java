@@ -27,6 +27,11 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 
 /**
+ * 顾问适配器注册中心，将 advice 适配成 MethodInterceptor
+ * - 前置通知适配器
+ * - 后置通知适配器
+ * - 异常通知适配器
+ *
  * Default implementation of the {@link AdvisorAdapterRegistry} interface.
  * Supports {@link org.aopalliance.intercept.MethodInterceptor},
  * {@link org.springframework.aop.MethodBeforeAdvice},
